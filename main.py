@@ -7,18 +7,22 @@ def main(page: Page):
         return Container(
             Row(
                 [
-                    Text(txt, size=20),
+                    Container(
+                        Text(txt, size=15),
+                        margin=margin.only(bottom=0),
+                        padding=padding.only(bottom=0),
+                    ),
                     Slider(
                         min=min,
                         max=max,
                         divisions=10,
                         label="{value}",
+                        width=250,
                         active_color="#164863",
                         inactive_color="#164863",
                     ),
                 ]
             ),
-            margin=margin.only(left=30),
         )
 
     # ColorPicker
@@ -30,10 +34,10 @@ def main(page: Page):
     color_picker = ColorPicker(color="#ffffff", width=300)
 
     color_container = Container(
-        width=20,
-        height=20,
+        width=32,
+        height=32,
         bgcolor="white",
-        border=border.all(1, "black"),
+        border=border.all(2, "black"),
         on_click=open_color_picker,
     )
 
@@ -69,62 +73,65 @@ def main(page: Page):
 
     main_content = Row(
         [
-            Row(
-                [
-                    Column(
-                        [
-                            Container(
-                                border=border.all(2, "black"),
-                                border_radius=border_radius.only(bottom_right=30),
-                                width=30,
-                                height=30,
-                                bgcolor="transparent",
-                                on_click=_exposure,
-                                data="top_left",
-                            ),
-                            Container(
-                                border=border.all(2, "black"),
-                                border_radius=border_radius.only(top_right=30),
-                                width=30,
-                                height=30,
-                                bgcolor="transparent",
-                                on_click=_exposure,
-                                data="bottom_left",
-                            ),
-                        ],
-                        spacing=370,
-                    ),
-                    Container(
-                        border_radius=50,
-                        width=250,
-                        height=250,
-                        bgcolor="blue",
-                        margin=margin.only(left=50, right=50),
-                    ),
-                    Column(
-                        [
-                            Container(
-                                border=border.all(2, "black"),
-                                border_radius=border_radius.only(bottom_left=30),
-                                width=30,
-                                height=30,
-                                bgcolor="transparent",
-                                on_click=_exposure,
-                                data="top_right",
-                            ),
-                            Container(
-                                border=border.all(2, "black"),
-                                border_radius=border_radius.only(top_left=30),
-                                width=30,
-                                height=30,
-                                bgcolor="transparent",
-                                on_click=_exposure,
-                                data="bottom_right",
-                            ),
-                        ],
-                        spacing=370,
-                    ),
-                ]
+            Container(
+                Row(
+                    [
+                        Column(
+                            [
+                                Container(
+                                    border=border.all(2, "black"),
+                                    border_radius=border_radius.only(bottom_right=30),
+                                    width=30,
+                                    height=30,
+                                    bgcolor="transparent",
+                                    on_click=_exposure,
+                                    data="top_left",
+                                ),
+                                Container(
+                                    border=border.all(2, "black"),
+                                    border_radius=border_radius.only(top_right=30),
+                                    width=30,
+                                    height=30,
+                                    bgcolor="transparent",
+                                    on_click=_exposure,
+                                    data="bottom_left",
+                                ),
+                            ],
+                            spacing=370,
+                        ),
+                        Container(
+                            border_radius=50,
+                            width=250,
+                            height=250,
+                            bgcolor="blue",
+                            margin=margin.only(left=50, right=50),
+                        ),
+                        Column(
+                            [
+                                Container(
+                                    border=border.all(2, "black"),
+                                    border_radius=border_radius.only(bottom_left=30),
+                                    width=30,
+                                    height=30,
+                                    bgcolor="transparent",
+                                    on_click=_exposure,
+                                    data="top_right",
+                                ),
+                                Container(
+                                    border=border.all(2, "black"),
+                                    border_radius=border_radius.only(top_left=30),
+                                    width=30,
+                                    height=30,
+                                    bgcolor="transparent",
+                                    on_click=_exposure,
+                                    data="bottom_right",
+                                ),
+                            ],
+                            spacing=370,
+                        ),
+                    ]
+                ),
+                margin=margin.only(right=30),
             ),
             Container(
                 Column(
@@ -132,23 +139,25 @@ def main(page: Page):
                         Container(
                             Row(
                                 [
-                                    Text("Pick a color", size=20),
+                                    Text("Pick a color: ", size=15),
                                     color_container,
                                 ]
                             ),
-                            margin=margin.only(top=20, left=30, right=10),
+                            margin=margin.only(right=10),
                         ),
                         text_slider("Size: ", 0, 370),
                         text_slider("Radius: ", 0, 370),
                         text_slider("Distance: ", 0, 370),
                         text_slider("Intensity: ", 0, 370),
                         text_slider("Blur: ", 0, 370),
-                    ]
+                    ],
+                    spacing=0,
                 ),
-                border_radius=45,
-                width=500,
-                height=450,
+                border_radius=35,
+                width=350,
+                height=485,
                 bgcolor="red",
+                padding=padding.only(30, 20, 30, 20),
             ),
         ],
         alignment=MainAxisAlignment.CENTER,
