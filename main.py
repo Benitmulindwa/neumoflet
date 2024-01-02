@@ -1,7 +1,44 @@
 from flet import *
+from flet_contrib.color_picker import ColorPicker
 
 
 def main(page: Page):
+    # ColorPicker
+    # _________________________________________________________________________________________________________________________________
+    def open_color_picker(e):
+        d.open = True
+        page.update()
+
+    color_picker = ColorPicker(color="#ffffff", width=300)
+
+    color_container = Container(
+        width=20,
+        height=20,
+        border=border.all(1, "black"),
+        on_click=open_color_picker,
+    )
+
+    def change_color(e):
+        color_container.bgcolor = color_picker.color
+        d.open = False
+        page.update()
+
+    def close_dialog(e):
+        d.open = False
+        d.update()
+
+    d = AlertDialog(
+        content=color_picker,
+        actions=[
+            TextButton("OK", on_click=change_color),
+            TextButton("Cancel", on_click=close_dialog),
+        ],
+        actions_alignment=MainAxisAlignment.START,
+        on_dismiss=change_color,
+    )
+    page.dialog = d
+
+    # _____________________________________________________________________________________________________________________________________
     def star_github(e):
         page.launch_url("https://github.com/Benitmulindwa/neumorphic")
         page.update()
@@ -71,10 +108,34 @@ def main(page: Page):
                 ]
             ),
             Container(
-                Column([]),
+                Column(
+                    [
+                        Container(
+                            Row(
+                                [
+                                    Text("Pick a color", size=20),
+                                    color_container,
+                                    # Text("or", size=20),
+                                    # TextField(
+                                    #     bgcolor="white",
+                                    #     border_color="black",
+                                    #     width=100,
+                                    #     height=22,
+                                    #     content_padding=padding.only(bottom=5, left=5),
+                                    #     cursor_height=20,
+                                    #     cursor_radius=0,
+                                    #     cursor_color="black",
+                                    # ),
+                                ]
+                            ),
+                            margin=margin.only(top=20, left=30, right=10),
+                        ),
+                        Row([Text("Size", size=20), Slider(min=0, max=370)]),
+                    ]
+                ),
                 border_radius=45,
                 width=500,
-                height=425,
+                height=450,
                 bgcolor="red",
             ),
         ],
