@@ -3,6 +3,24 @@ from flet_contrib.color_picker import ColorPicker
 
 
 def main(page: Page):
+    def text_slider(txt: str, min: float, max: float):
+        return Container(
+            Row(
+                [
+                    Text(txt, size=20),
+                    Slider(
+                        min=min,
+                        max=max,
+                        divisions=10,
+                        label="{value}",
+                        active_color="#164863",
+                        inactive_color="#164863",
+                    ),
+                ]
+            ),
+            margin=margin.only(left=30),
+        )
+
     # ColorPicker
     # _________________________________________________________________________________________________________________________________
     def open_color_picker(e):
@@ -14,6 +32,7 @@ def main(page: Page):
     color_container = Container(
         width=20,
         height=20,
+        bgcolor="white",
         border=border.all(1, "black"),
         on_click=open_color_picker,
     )
@@ -115,22 +134,15 @@ def main(page: Page):
                                 [
                                     Text("Pick a color", size=20),
                                     color_container,
-                                    # Text("or", size=20),
-                                    # TextField(
-                                    #     bgcolor="white",
-                                    #     border_color="black",
-                                    #     width=100,
-                                    #     height=22,
-                                    #     content_padding=padding.only(bottom=5, left=5),
-                                    #     cursor_height=20,
-                                    #     cursor_radius=0,
-                                    #     cursor_color="black",
-                                    # ),
                                 ]
                             ),
                             margin=margin.only(top=20, left=30, right=10),
                         ),
-                        Row([Text("Size", size=20), Slider(min=0, max=370)]),
+                        text_slider("Size: ", 0, 370),
+                        text_slider("Radius: ", 0, 370),
+                        text_slider("Distance: ", 0, 370),
+                        text_slider("Intensity: ", 0, 370),
+                        text_slider("Blur: ", 0, 370),
                     ]
                 ),
                 border_radius=45,
