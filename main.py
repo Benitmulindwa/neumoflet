@@ -3,6 +3,21 @@ from flet_contrib.color_picker import ColorPicker
 
 
 def main(page: Page):
+    color_picker = ColorPicker(color="#ffffff", width=300)
+
+    def get_slider_value(e):
+        if e.control.data == "radius":
+            _element.border_radius = e.control.value
+            _element.update()
+        elif e.control.data == "size":
+            _element.width = e.control.value
+            _element.height = e.control.value
+            _element.update()
+
+    def open_color_picker(e):
+        d.open = True
+        page.update()
+
     def text_slider(
         txt: str, min: float, max: float, width: int, data, default_val: int = 0
     ) -> Container:
@@ -30,7 +45,7 @@ def main(page: Page):
         border_radius=50,
         width=250,
         height=250,
-        bgcolor="blue",
+        bgcolor=color_picker.color,
         margin=margin.only(left=50, right=50),
         shadow=BoxShadow(
             blur_radius=60,
@@ -39,24 +54,6 @@ def main(page: Page):
             blur_style=ShadowBlurStyle.OUTER,
         ),
     )
-
-    def get_slider_value(e):
-        if e.control.data == "radius":
-            _element.border_radius = e.control.value
-            _element.update()
-        elif e.control.data == "size":
-            _element.width = e.control.value
-            _element.height = e.control.value
-            _element.update()
-
-    # ColorPicker
-    # _________________________________________________________________________________________________________________________________
-    def open_color_picker(e):
-        d.open = True
-        page.update()
-
-    color_picker = ColorPicker(color="#ffffff", width=300)
-
     color_container = Container(
         width=32,
         height=32,
@@ -65,8 +62,59 @@ def main(page: Page):
         on_click=open_color_picker,
     )
 
+    setting_container = Container(
+        Column(
+            [
+                Container(
+                    Row(
+                        [
+                            Text(
+                                "Pick a color: ",
+                                size=15,
+                                weight=FontWeight.W_600,
+                            ),
+                            color_container,
+                        ]
+                    ),
+                    margin=margin.only(right=10),
+                ),
+                text_slider("Size: ", 10, 350, width=270, data="size", default_val=250),
+                text_slider(
+                    "Radius: ", 0, 132, width=250, data="radius", default_val=50
+                ),
+                text_slider("Distance: ", 0, 370, width=240, data="distance"),
+                text_slider("Intensity: ", 0, 370, width=240, data="intensity"),
+                text_slider("Blur: ", 0, 370, width=270, data="blur"),
+                Text("Code: ", size=15, weight=FontWeight.W_600),
+                Container(
+                    bgcolor="yellow",
+                    width=380,
+                    height=100,
+                ),
+            ],
+            spacing=0,
+        ),
+        border_radius=35,
+        width=350,
+        height=450,
+        bgcolor=color_picker.color,
+        padding=padding.only(30, 20, 30, 20),
+        shadow=BoxShadow(
+            blur_radius=15,
+            color=colors.BLUE_GREY_300,
+            offset=Offset(0, 0),
+            blur_style=ShadowBlurStyle.OUTER,
+        ),
+    )
+
+    # ColorPicker
+    # _________________________________________________________________________________________________________________________________
+
     def change_color(e):
         color_container.bgcolor = color_picker.color
+        page.bgcolor = color_picker.color
+        _element.bgcolor = color_picker.color
+        setting_container.bgcolor = color_picker.color
         d.open = False
         page.update()
 
@@ -92,7 +140,7 @@ def main(page: Page):
 
     def _exposure(e):
         e.control.bgcolor = "yellow"
-        print(e.control.data)
+        # print(e.control.data)
         e.control.update()
 
     main_content = Row(
@@ -151,52 +199,7 @@ def main(page: Page):
                 ),
                 margin=margin.only(right=30),
             ),
-            Container(
-                Column(
-                    [
-                        Container(
-                            Row(
-                                [
-                                    Text(
-                                        "Pick a color: ",
-                                        size=15,
-                                        weight=FontWeight.W_600,
-                                    ),
-                                    color_container,
-                                ]
-                            ),
-                            margin=margin.only(right=10),
-                        ),
-                        text_slider(
-                            "Size: ", 10, 350, width=270, data="size", default_val=250
-                        ),
-                        text_slider(
-                            "Radius: ", 0, 132, width=250, data="radius", default_val=50
-                        ),
-                        text_slider("Distance: ", 0, 370, width=240, data="distance"),
-                        text_slider("Intensity: ", 0, 370, width=240, data="intensity"),
-                        text_slider("Blur: ", 0, 370, width=270, data="blur"),
-                        Text("Code: ", size=15, weight=FontWeight.W_600),
-                        Container(
-                            bgcolor="yellow",
-                            width=380,
-                            height=100,
-                        ),
-                    ],
-                    spacing=0,
-                ),
-                border_radius=35,
-                width=350,
-                height=450,
-                bgcolor="red",
-                padding=padding.only(30, 20, 30, 20),
-                shadow=BoxShadow(
-                    blur_radius=15,
-                    color=colors.BLUE_GREY_300,
-                    offset=Offset(0, 0),
-                    blur_style=ShadowBlurStyle.OUTER,
-                ),
-            ),
+            setting_container,
         ],
         alignment=MainAxisAlignment.CENTER,
         spacing=10,
@@ -228,7 +231,7 @@ def main(page: Page):
         alignment=MainAxisAlignment.CENTER,
     )
 
-    page.bgcolor = "blue"
+    page.bgcolor = color_picker.color
 
     page.theme_mode = "light"
     page.add(title, main_content)
