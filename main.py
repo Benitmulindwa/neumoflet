@@ -3,7 +3,9 @@ from flet_contrib.color_picker import ColorPicker
 
 
 def main(page: Page):
-    def text_slider(txt: str, min: float, max: float, width: int = 250) -> Container:
+    def text_slider(
+        txt: str, min: float, max: float, width: int, data, default_val: int = 0
+    ) -> Container:
         return Container(
             Row(
                 [
@@ -12,14 +14,36 @@ def main(page: Page):
                         min=min,
                         max=max,
                         divisions=10,
+                        value=default_val,
                         label="{value}",
                         width=width,
                         active_color="#164863",
                         inactive_color="#164863",
+                        on_change=get_slider_value,
+                        data=data,
                     ),
                 ]
             ),
         )
+
+    _element = Container(
+        border_radius=50,
+        width=250,
+        height=250,
+        bgcolor="blue",
+        margin=margin.only(left=50, right=50),
+        shadow=BoxShadow(
+            blur_radius=60,
+            color=colors.BLUE_GREY_300,
+            offset=Offset(-2, -2),
+            blur_style=ShadowBlurStyle.OUTER,
+        ),
+    )
+
+    def get_slider_value(e):
+        if e.control.data == "radius":
+            _element.border_radius = e.control.value
+            _element.update()
 
     # ColorPicker
     # _________________________________________________________________________________________________________________________________
@@ -95,19 +119,7 @@ def main(page: Page):
                             ],
                             spacing=370,
                         ),
-                        Container(
-                            border_radius=50,
-                            width=250,
-                            height=250,
-                            bgcolor="blue",
-                            margin=margin.only(left=50, right=50),
-                            shadow=BoxShadow(
-                                blur_radius=60,
-                                color=colors.BLUE_GREY_300,
-                                offset=Offset(-2, -2),
-                                blur_style=ShadowBlurStyle.OUTER,
-                            ),
-                        ),
+                        _element,
                         Column(
                             [
                                 Container(
@@ -151,11 +163,13 @@ def main(page: Page):
                             ),
                             margin=margin.only(right=10),
                         ),
-                        text_slider("Size: ", 0, 370, width=270),
-                        text_slider("Radius: ", 0, 370),
-                        text_slider("Distance: ", 0, 370, width=240),
-                        text_slider("Intensity: ", 0, 370, width=240),
-                        text_slider("Blur: ", 0, 370, width=270),
+                        text_slider("Size: ", 0, 370, width=270, data="size"),
+                        text_slider(
+                            "Radius: ", 0, 132, width=250, data="radius", default_val=50
+                        ),
+                        text_slider("Distance: ", 0, 370, width=240, data="distance"),
+                        text_slider("Intensity: ", 0, 370, width=240, data="intensity"),
+                        text_slider("Blur: ", 0, 370, width=270, data="blur"),
                         Text("Code: ", size=15, weight=FontWeight.W_600),
                         Container(
                             bgcolor="yellow",
@@ -207,6 +221,7 @@ def main(page: Page):
         ],
         alignment=MainAxisAlignment.CENTER,
     )
+
     page.bgcolor = "blue"
 
     # page.theme_mode = "light"
