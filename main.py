@@ -3,21 +3,17 @@ from flet_contrib.color_picker import ColorPicker
 
 
 def main(page: Page):
-    def text_slider(txt: str, min: float, max: float):
+    def text_slider(txt: str, min: float, max: float, width: int = 250) -> Container:
         return Container(
             Row(
                 [
-                    Container(
-                        Text(txt, size=15),
-                        margin=margin.only(bottom=0),
-                        padding=padding.only(bottom=0),
-                    ),
+                    Container(Text(txt, size=15, weight=FontWeight.W_600)),
                     Slider(
                         min=min,
                         max=max,
                         divisions=10,
                         label="{value}",
-                        width=250,
+                        width=width,
                         active_color="#164863",
                         inactive_color="#164863",
                     ),
@@ -105,6 +101,12 @@ def main(page: Page):
                             height=250,
                             bgcolor="blue",
                             margin=margin.only(left=50, right=50),
+                            shadow=BoxShadow(
+                                blur_radius=60,
+                                color=colors.BLUE_GREY_300,
+                                offset=Offset(-2, -2),
+                                blur_style=ShadowBlurStyle.OUTER,
+                            ),
                         ),
                         Column(
                             [
@@ -139,25 +141,41 @@ def main(page: Page):
                         Container(
                             Row(
                                 [
-                                    Text("Pick a color: ", size=15),
+                                    Text(
+                                        "Pick a color: ",
+                                        size=15,
+                                        weight=FontWeight.W_600,
+                                    ),
                                     color_container,
                                 ]
                             ),
                             margin=margin.only(right=10),
                         ),
-                        text_slider("Size: ", 0, 370),
+                        text_slider("Size: ", 0, 370, width=270),
                         text_slider("Radius: ", 0, 370),
-                        text_slider("Distance: ", 0, 370),
-                        text_slider("Intensity: ", 0, 370),
-                        text_slider("Blur: ", 0, 370),
+                        text_slider("Distance: ", 0, 370, width=240),
+                        text_slider("Intensity: ", 0, 370, width=240),
+                        text_slider("Blur: ", 0, 370, width=270),
+                        Text("Code: ", size=15, weight=FontWeight.W_600),
+                        Container(
+                            bgcolor="yellow",
+                            width=380,
+                            height=100,
+                        ),
                     ],
                     spacing=0,
                 ),
                 border_radius=35,
                 width=350,
-                height=485,
+                height=450,
                 bgcolor="red",
                 padding=padding.only(30, 20, 30, 20),
+                shadow=BoxShadow(
+                    blur_radius=15,
+                    color=colors.BLUE_GREY_300,
+                    offset=Offset(0, 0),
+                    blur_style=ShadowBlurStyle.OUTER,
+                ),
             ),
         ],
         alignment=MainAxisAlignment.CENTER,
@@ -184,13 +202,14 @@ def main(page: Page):
                     leading=Icon(icons.STAR_BORDER),
                     on_click=star_github,
                 ),
-                margin=margin.only(bottom=28),
+                margin=margin.only(bottom=40),
             ),
         ],
         alignment=MainAxisAlignment.CENTER,
     )
+    page.bgcolor = "blue"
 
-    page.theme_mode = "light"
+    # page.theme_mode = "light"
     page.add(title, main_content)
 
 
