@@ -2,9 +2,48 @@ from flet import *
 from flet_contrib.color_picker import ColorPicker
 
 
+def is_color_dark(hex_color):
+    # Convert hex color to RGB components
+    r = int(hex_color[1:3], 16) / 255.0
+    g = int(hex_color[3:5], 16) / 255.0
+    b = int(hex_color[5:], 16) / 255.0
+
+    # Calculate relative luminance
+    luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
+
+    # Check if color is dark (adjust the threshold as needed)
+    return luminance < 0.5
+
+
+TEXT_SLIDER_COLOR = None
+
+
 def main(page: Page):
     color_picker = ColorPicker(color="#ffffff", width=300)
 
+    # Source of light
+    def light_source(data, **radius):
+        return Container(
+            border=border.all(2, "black"),
+            border_radius=border_radius.only(**radius),
+            width=30,
+            height=30,
+            bgcolor="transparent",
+            on_click=_exposure,
+            data=data,
+        )
+
+    def _exposure(e):
+        e.control.bgcolor = "yellow"
+        # print(e.control.data)
+        e.control.update()
+
+    TOP_LEFT = light_source("top_left", bottom_right=30)
+    BOTTOM_RIGHT = light_source("bottom_left", top_right=30)
+    TOP_RIGHT = light_source("top_right", bottom_left=30)
+    BOTTOM_LEFT = light_source("bottom_left", top_left=30)
+
+    # L=0.2126*R+0.7152*G+0.0722*B
     def get_slider_value(e):
         if e.control.data == "radius":
             _element.border_radius = e.control.value
@@ -107,10 +146,14 @@ def main(page: Page):
         ),
     )
 
-    # ColorPicker
+    # Change Color
     # _________________________________________________________________________________________________________________________________
 
     def change_color(e):
+        if is_color_dark(color_picker.color):
+            TEXT_SLIDERS_COLOR = "white"
+        else:
+            TEXT_SLIDERS_COLOR = "black"
         color_container.bgcolor = color_picker.color
         page.bgcolor = color_picker.color
         _element.bgcolor = color_picker.color
@@ -138,11 +181,6 @@ def main(page: Page):
         page.launch_url("https://github.com/Benitmulindwa/neumorphic")
         page.update()
 
-    def _exposure(e):
-        e.control.bgcolor = "yellow"
-        # print(e.control.data)
-        e.control.update()
-
     main_content = Row(
         [
             Container(
@@ -150,48 +188,16 @@ def main(page: Page):
                     [
                         Column(
                             [
-                                Container(
-                                    border=border.all(2, "black"),
-                                    border_radius=border_radius.only(bottom_right=30),
-                                    width=30,
-                                    height=30,
-                                    bgcolor="transparent",
-                                    on_click=_exposure,
-                                    data="top_left",
-                                ),
-                                Container(
-                                    border=border.all(2, "black"),
-                                    border_radius=border_radius.only(top_right=30),
-                                    width=30,
-                                    height=30,
-                                    bgcolor="transparent",
-                                    on_click=_exposure,
-                                    data="bottom_left",
-                                ),
+                                TOP_LEFT,
+                                BOTTOM_RIGHT,
                             ],
                             spacing=370,
                         ),
                         _element,
                         Column(
                             [
-                                Container(
-                                    border=border.all(2, "black"),
-                                    border_radius=border_radius.only(bottom_left=30),
-                                    width=30,
-                                    height=30,
-                                    bgcolor="transparent",
-                                    on_click=_exposure,
-                                    data="top_right",
-                                ),
-                                Container(
-                                    border=border.all(2, "black"),
-                                    border_radius=border_radius.only(top_left=30),
-                                    width=30,
-                                    height=30,
-                                    bgcolor="transparent",
-                                    on_click=_exposure,
-                                    data="bottom_right",
-                                ),
+                                TOP_RIGHT,
+                                BOTTOM_LEFT,
                             ],
                             spacing=370,
                         ),
@@ -209,7 +215,7 @@ def main(page: Page):
             Container(
                 Column(
                     [
-                        Text("NEUMORPHIC", size=50, weight=FontWeight.BOLD),
+                        Text("NEUMOFLET", size=50, weight=FontWeight.BOLD),
                         Text("Generate Soft-UI Flet code"),
                     ],
                     spacing=0,
@@ -230,7 +236,7 @@ def main(page: Page):
         ],
         alignment=MainAxisAlignment.CENTER,
     )
-
+    print(TEXT_SLIDER_COLOR)
     page.bgcolor = color_picker.color
 
     page.theme_mode = "light"
