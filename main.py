@@ -230,7 +230,7 @@ def main(page: Page):
 
     page.bgcolor = "blue"
 
-    # page.theme_mode = "light"
+    page.theme_mode = "light"
     page.add(title, main_content)
 
 
