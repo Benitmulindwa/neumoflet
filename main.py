@@ -44,6 +44,10 @@ def main(page: Page):
         if e.control.data == "radius":
             _element.border_radius = e.control.value
             _element.update()
+        elif e.control.data == "size":
+            _element.width = e.control.value
+            _element.height = e.control.value
+            _element.update()
 
     # ColorPicker
     # _________________________________________________________________________________________________________________________________
@@ -163,7 +167,9 @@ def main(page: Page):
                             ),
                             margin=margin.only(right=10),
                         ),
-                        text_slider("Size: ", 0, 370, width=270, data="size"),
+                        text_slider(
+                            "Size: ", 10, 350, width=270, data="size", default_val=250
+                        ),
                         text_slider(
                             "Radius: ", 0, 132, width=250, data="radius", default_val=50
                         ),
