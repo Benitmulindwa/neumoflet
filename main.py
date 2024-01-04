@@ -16,7 +16,7 @@ def is_color_dark(hex_color):
 
 
 def main(page: Page):
-    color_picker = ColorPicker(color="#e1d1d3", width=300)
+    color_picker = ColorPicker(color="#000000", width=300)
 
     # Source of light
     def light_source(data, **radius):
@@ -30,14 +30,37 @@ def main(page: Page):
             data=data,
         )
 
+    def handle_light(data):
+        DIST = DISTANCE.content.controls[1].value
+        if data == "top_left":
+            positionX = DIST * -1
+            positionY = DIST * -1
+        elif data == "top_right":
+            positionX = DIST
+            positionY = DIST * -1
+        elif data == "bottom_left":
+            positionX = DIST
+            positionY = DIST
+        elif data == "bottom_right":
+            positionX = DIST * -1
+            positionY = DIST
+        else:
+            positionX = DIST * -1
+            positionY = DIST * -1
+        return positionX, positionY
+
     # when the light source is clicked
     def _exposure(e):
-        e.control.bgcolor = "yellow"
-        # print(e.control.data)
+        if e.control.data in ["top_left", "top_right", "bottom_right", "bottom_left"]:
+            e.control.bgcolor = "yellow"
+        # light position based on positionX and positionY returned by the function handle_light()
+        _element.shadow.offset = handle_light(e.control.data)
+        _element.update()
+        print(e.control.data)
         e.control.update()
 
     TOP_LEFT = light_source("top_left", bottom_right=30)
-    BOTTOM_RIGHT = light_source("bottom_left", top_right=30)
+    BOTTOM_RIGHT = light_source("bottom_right", top_right=30)
     TOP_RIGHT = light_source("top_right", bottom_left=30)
     BOTTOM_LEFT = light_source("bottom_left", top_left=30)
 
@@ -45,11 +68,19 @@ def main(page: Page):
     def get_slider_value(e):
         if e.control.data == "radius":
             _element.border_radius = e.control.value
-            _element.update()
+
         elif e.control.data == "size":
             _element.width = e.control.value
             _element.height = e.control.value
-            _element.update()
+
+        elif e.control.data == "distance":
+            distance = e.control.value
+
+            _element.shadow.blur_radius = distance
+
+            # if _element.shadow.offset
+            # print()
+        _element.update()
 
     def open_color_picker(e):
         d.open = True
@@ -82,9 +113,11 @@ def main(page: Page):
     # Each slider(& its text) is stored inside a variable
     SIZE = text_slider("Size: ", 10, 350, width=270, data="size", default_val=250)
     RADIUS = text_slider("Radius: ", 0, 175, width=250, data="radius", default_val=50)
-    DISTANCE = text_slider("Distance: ", 0, 370, width=240, data="distance")
-    INTENSITY = text_slider("Intensity: ", 0, 370, width=240, data="intensity")
-    BLUR = text_slider("Blur: ", 0, 370, width=270, data="blur")
+    DISTANCE = text_slider(
+        "Distance: ", 5, 50, width=240, data="distance", default_val=5
+    )
+    INTENSITY = text_slider("Intensity: ", 0.01, 0.6, width=240, data="intensity")
+    BLUR = text_slider("Blur: ", 0, 100, width=270, data="blur")
 
     _element = Container(
         border_radius=50,
@@ -93,10 +126,10 @@ def main(page: Page):
         bgcolor=color_picker.color,
         margin=margin.only(left=10, right=10),
         shadow=BoxShadow(
-            blur_radius=60,
+            blur_radius=5,
             color=colors.BLUE_GREY_300,
-            offset=Offset(-2, -2),
-            blur_style=ShadowBlurStyle.OUTER,
+            offset=Offset(-50, -50),
+            blur_style=ShadowBlurStyle.NORMAL,
         ),
     )
     color_picker_container = Container(
@@ -170,8 +203,10 @@ def main(page: Page):
         for bubble in [TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT]:
             bubble.border.top.color = TEXT_SLIDERS_COLOR
 
-        title.controls[0].content.controls[0].color = TEXT_SLIDERS_COLOR
-        title.controls[0].content.controls[1].color = TEXT_SLIDERS_COLOR
+        title_container.controls[1].content.controls[
+            0
+        ].content.color = TEXT_SLIDERS_COLOR
+        title_container.controls[1].content.controls[1].color = TEXT_SLIDERS_COLOR
         color_picker_container.border.top.color = TEXT_SLIDERS_COLOR
         color_picker_container.bgcolor = color_picker.color
         page.bgcolor = color_picker.color
