@@ -91,7 +91,7 @@ def main(page: Page):
         width=250,
         height=250,
         bgcolor=color_picker.color,
-        margin=margin.only(left=20, right=20),
+        margin=margin.only(left=10, right=10),
         shadow=BoxShadow(
             blur_radius=60,
             color=colors.BLUE_GREY_300,
@@ -218,10 +218,10 @@ def main(page: Page):
                                 TOP_LEFT,
                                 BOTTOM_RIGHT,
                             ],
-                            spacing=400,
+                            spacing=370,
                         ),
                         Column(
-                            [Container(width=400), _element, Container(width=400)],
+                            [Container(width=370), _element, Container(width=370)],
                             horizontal_alignment=CrossAxisAlignment.CENTER,
                         ),
                         Column(
@@ -229,7 +229,7 @@ def main(page: Page):
                                 TOP_RIGHT,
                                 BOTTOM_LEFT,
                             ],
-                            spacing=400,
+                            spacing=370,
                         ),
                     ]
                 ),
