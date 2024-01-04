@@ -16,7 +16,7 @@ def is_color_dark(hex_color):
 
 
 def main(page: Page):
-    color_picker = ColorPicker(color="#ffffff", width=300)
+    color_picker = ColorPicker(color="#e1d1d3", width=300)
 
     # Source of light
     def light_source(data, **radius):
@@ -91,7 +91,7 @@ def main(page: Page):
         width=250,
         height=250,
         bgcolor=color_picker.color,
-        margin=margin.only(left=50, right=50),
+        margin=margin.only(left=20, right=20),
         shadow=BoxShadow(
             blur_radius=60,
             color=colors.BLUE_GREY_300,
@@ -102,7 +102,7 @@ def main(page: Page):
     color_picker_container = Container(
         width=32,
         height=32,
-        bgcolor="white",
+        bgcolor="#e1d1d3",
         border=border.all(2, "black"),
         on_click=open_color_picker,
     )
@@ -218,15 +218,18 @@ def main(page: Page):
                                 TOP_LEFT,
                                 BOTTOM_RIGHT,
                             ],
-                            spacing=370,
+                            spacing=400,
                         ),
-                        _element,
+                        Column(
+                            [Container(width=400), _element, Container(width=400)],
+                            horizontal_alignment=CrossAxisAlignment.CENTER,
+                        ),
                         Column(
                             [
                                 TOP_RIGHT,
                                 BOTTOM_LEFT,
                             ],
-                            spacing=370,
+                            spacing=400,
                         ),
                     ]
                 ),
