@@ -240,12 +240,21 @@ def main(page: Page):
         alignment=MainAxisAlignment.CENTER,
         spacing=10,
     )
-    title = Row(
+    title = Container(
+        Text(
+            "Neumoflet.io",
+            size=50,
+            weight=FontWeight.BOLD,
+        )
+    )
+    title.alignment = alignment.center
+    title_container = Row(
         [
+            Container(width=150),
             Container(
                 Column(
                     [
-                        Text("Neumoflet.io", size=50, weight=FontWeight.BOLD),
+                        title,
                         Text("Generate Soft-UI Flet code"),
                     ],
                     spacing=0,
@@ -270,7 +279,7 @@ def main(page: Page):
     page.bgcolor = color_picker.color
 
     page.theme_mode = "light"
-    page.add(title, main_content)
+    page.add(title_container, main_content)
 
 
 if __name__ == "__main__":
