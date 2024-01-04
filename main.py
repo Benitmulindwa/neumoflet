@@ -15,9 +15,6 @@ def is_color_dark(hex_color):
     return luminance < 0.5
 
 
-TEXT_SLIDER_COLOR = None
-
-
 def main(page: Page):
     color_picker = ColorPicker(color="#ffffff", width=300)
 
@@ -33,6 +30,7 @@ def main(page: Page):
             data=data,
         )
 
+    # when the light source is clicked
     def _exposure(e):
         e.control.bgcolor = "yellow"
         # print(e.control.data)
@@ -93,7 +91,7 @@ def main(page: Page):
             blur_style=ShadowBlurStyle.OUTER,
         ),
     )
-    color_container = Container(
+    color_picker_container = Container(
         width=32,
         height=32,
         bgcolor="white",
@@ -112,7 +110,7 @@ def main(page: Page):
                                 size=15,
                                 weight=FontWeight.W_600,
                             ),
-                            color_container,
+                            color_picker_container,
                         ]
                     ),
                     margin=margin.only(right=10),
@@ -150,11 +148,19 @@ def main(page: Page):
     # _________________________________________________________________________________________________________________________________
 
     def change_color(e):
+        # Check if the color if dark
         if is_color_dark(color_picker.color):
             TEXT_SLIDERS_COLOR = "white"
+
         else:
             TEXT_SLIDERS_COLOR = "black"
-        color_container.bgcolor = color_picker.color
+
+        for bubble in [TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT]:
+            bubble.border.top.color = TEXT_SLIDERS_COLOR
+        title.controls[0].content.controls[0].color = TEXT_SLIDERS_COLOR
+        title.controls[0].content.controls[1].color = TEXT_SLIDERS_COLOR
+        color_picker_container.border.top.color = TEXT_SLIDERS_COLOR
+        color_picker_container.bgcolor = color_picker.color
         page.bgcolor = color_picker.color
         _element.bgcolor = color_picker.color
         setting_container.bgcolor = color_picker.color
@@ -236,7 +242,7 @@ def main(page: Page):
         ],
         alignment=MainAxisAlignment.CENTER,
     )
-    print(TEXT_SLIDER_COLOR)
+
     page.bgcolor = color_picker.color
 
     page.theme_mode = "light"
