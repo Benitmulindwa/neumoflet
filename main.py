@@ -55,6 +55,7 @@ def main(page: Page):
         d.open = True
         page.update()
 
+    # Text - Slider
     def text_slider(
         txt: str, min: float, max: float, width: int, data, default_val: int = 0
     ) -> Container:
@@ -78,6 +79,7 @@ def main(page: Page):
             ),
         )
 
+    # Each slider(& its text) is stored inside a variable
     SIZE = text_slider("Size: ", 10, 350, width=270, data="size", default_val=250)
     RADIUS = text_slider("Radius: ", 0, 175, width=250, data="radius", default_val=50)
     DISTANCE = text_slider("Distance: ", 0, 370, width=240, data="distance")
@@ -185,6 +187,7 @@ def main(page: Page):
         d.open = False
         page.update()
 
+    # Handle the closing of the Alert Dialog for color picker
     def close_dialog(e):
         d.open = False
         d.update()
