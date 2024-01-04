@@ -78,6 +78,12 @@ def main(page: Page):
             ),
         )
 
+    SIZE = text_slider("Size: ", 10, 350, width=270, data="size", default_val=250)
+    RADIUS = text_slider("Radius: ", 0, 175, width=250, data="radius", default_val=50)
+    DISTANCE = text_slider("Distance: ", 0, 370, width=240, data="distance")
+    INTENSITY = text_slider("Intensity: ", 0, 370, width=240, data="intensity")
+    BLUR = text_slider("Blur: ", 0, 370, width=270, data="blur")
+
     _element = Container(
         border_radius=50,
         width=250,
@@ -115,13 +121,11 @@ def main(page: Page):
                     ),
                     margin=margin.only(right=10),
                 ),
-                text_slider("Size: ", 10, 350, width=270, data="size", default_val=250),
-                text_slider(
-                    "Radius: ", 0, 132, width=250, data="radius", default_val=50
-                ),
-                text_slider("Distance: ", 0, 370, width=240, data="distance"),
-                text_slider("Intensity: ", 0, 370, width=240, data="intensity"),
-                text_slider("Blur: ", 0, 370, width=270, data="blur"),
+                SIZE,
+                RADIUS,
+                DISTANCE,
+                INTENSITY,
+                BLUR,
                 Text("Code: ", size=15, weight=FontWeight.W_600),
                 Container(
                     bgcolor="yellow",
@@ -148,15 +152,22 @@ def main(page: Page):
     # _________________________________________________________________________________________________________________________________
 
     def change_color(e):
-        # Check if the color if dark
+        # Check if the picked color is dark
         if is_color_dark(color_picker.color):
             TEXT_SLIDERS_COLOR = "white"
 
         else:
-            TEXT_SLIDERS_COLOR = "black"
+            TEXT_SLIDERS_COLOR = "#001f3f"
+
+        # Text - Slider color
+        for txt_slider in [SIZE, RADIUS, DISTANCE, INTENSITY, BLUR]:
+            txt_slider.content.controls[0].content.color = TEXT_SLIDERS_COLOR
+            txt_slider.content.controls[1].inactive_color = TEXT_SLIDERS_COLOR
+            txt_slider.content.controls[1].active_color = TEXT_SLIDERS_COLOR
 
         for bubble in [TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT]:
             bubble.border.top.color = TEXT_SLIDERS_COLOR
+
         title.controls[0].content.controls[0].color = TEXT_SLIDERS_COLOR
         title.controls[0].content.controls[1].color = TEXT_SLIDERS_COLOR
         color_picker_container.border.top.color = TEXT_SLIDERS_COLOR
@@ -164,6 +175,13 @@ def main(page: Page):
         page.bgcolor = color_picker.color
         _element.bgcolor = color_picker.color
         setting_container.bgcolor = color_picker.color
+
+        setting_container.content.controls[0].content.controls[
+            0
+        ].color = TEXT_SLIDERS_COLOR  # pick_a_color(text)
+        setting_container.content.controls[
+            6
+        ].color = TEXT_SLIDERS_COLOR  # code_text color
         d.open = False
         page.update()
 
@@ -221,7 +239,7 @@ def main(page: Page):
             Container(
                 Column(
                     [
-                        Text("NEUMOFLET", size=50, weight=FontWeight.BOLD),
+                        Text("Neumoflet.io", size=50, weight=FontWeight.BOLD),
                         Text("Generate Soft-UI Flet code"),
                     ],
                     spacing=0,
