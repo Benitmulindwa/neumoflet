@@ -11,7 +11,7 @@ def is_color_dark(hex_color):
     return luminance < 0.5
 
 
-def calculate_shadow_colors(background_color, intens: int = 0):
+def calculate_shadow_colors(background_color, intens: int = 0.15):
     # Validate and clean the background color string
     background_color = "".join(c for c in background_color if c.isalnum())
 
@@ -53,13 +53,12 @@ def get_color_intensity(hex, intensity):
     if len(hex) < 6:
         hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
 
-    lum = intensity or 0
+    intensity = intensity or 0
 
-    # Convert to decimal and change luminosity
     color = "#"
     for i in range(0, 3):
         c = int(hex[i * 2 : i * 2 + 2], 16)
-        c = min(max(0, c + c * lum), 255)
+        c = min(max(0, c + c * intensity), 255)
         color += format(int(c), "02x")
 
     return color

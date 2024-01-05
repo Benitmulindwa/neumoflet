@@ -55,7 +55,7 @@ def main(page: Page):
     # when the light source is clicked
     def _exposure(e):
         # light position based on positionX and positionY returned by the function handle_light()
-        X, Y = handle_light(e.control.data, DISTANCE.content.controls[1].value * 0.1)
+        X, Y = handle_light(e.control.data, DISTANCE.content.controls[1].value)
         _element.shadow[1].offset = X, Y
         _element.shadow[0].offset = -X, -Y
 
@@ -86,10 +86,13 @@ def main(page: Page):
             _element.shadow[0].blur_radius = distance
             _element.shadow[1].blur_radius = distance
             BLUR.content.controls[1].value = distance * 2
+            _element.shadow[0].blur_radius = distance
+            _element.shadow[1].blur_radius = distance
             BLUR.content.controls[1].update()
-            _element.update()
+
         elif e.control.data == "blur":
             _element.shadow[0].blur_radius = e.control.value
+            _element.shadow[1].blur_radius = e.control.value
             # if _element.shadow.offset
             # print()
         elif e.control.data == "intensity":
@@ -152,15 +155,21 @@ def main(page: Page):
         margin=margin.only(left=10, right=10),
         shadow=[
             BoxShadow(
-                blur_radius=5,
+                blur_radius=DISTANCE.content.controls[1].value,
                 color=shadow_color,
-                offset=Offset(5, 5),
+                offset=Offset(
+                    DISTANCE.content.controls[1].value,
+                    DISTANCE.content.controls[1].value,
+                ),
                 blur_style=ShadowBlurStyle.NORMAL,
             ),
             BoxShadow(
-                blur_radius=5,
+                blur_radius=DISTANCE.content.controls[1].value,
                 color=highlight_color,
-                offset=Offset(-5, -5),
+                offset=Offset(
+                    -DISTANCE.content.controls[1].value,
+                    -DISTANCE.content.controls[1].value,
+                ),
                 blur_style=ShadowBlurStyle.NORMAL,
             ),
         ],
