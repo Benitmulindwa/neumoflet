@@ -74,12 +74,19 @@ def main(page: Page):
     BOTTOM_LEFT = light_source_ui("bottom_left", top_left=30)
 
     def get_slider_value(e):
-        if e.control.data == "radius":
-            _element.border_radius = e.control.value
+        if e.control.data == "size":
+            size = e.control.value
+            _element.width = size
+            _element.height = size
+            BLUR.content.controls[1].value = size // 5
+            _element.shadow[0].blur_radius = size // 5
+            _element.shadow[1].blur_radius = size // 5
+            DISTANCE.content.controls[1].value = size // 10
+            _element.shadow[0].blur_radius = size // 10
+            _element.shadow[1].blur_radius = size // 10
 
-        elif e.control.data == "size":
-            _element.width = e.control.value
-            _element.height = e.control.value
+        elif e.control.data == "radius":
+            _element.border_radius = e.control.value
 
         elif e.control.data == "distance":
             distance = e.control.value
@@ -87,14 +94,12 @@ def main(page: Page):
             _element.shadow[1].blur_radius = distance
             BLUR.content.controls[1].value = distance * 2
             _element.shadow[0].blur_radius = distance
-            _element.shadow[1].blur_radius = distance
-            BLUR.content.controls[1].update()
+            _element.shadow[1].blur_radius = distance * 2
 
         elif e.control.data == "blur":
             _element.shadow[0].blur_radius = e.control.value
             _element.shadow[1].blur_radius = e.control.value
-            # if _element.shadow.offset
-            # print()
+
         elif e.control.data == "intensity":
             intensity = e.control.value
 
@@ -104,6 +109,9 @@ def main(page: Page):
             _element.shadow[0].color = shadow_color
             _element.shadow[1].color = highlight_color
 
+        RADIUS.content.controls[1].update()
+        DISTANCE.content.controls[1].update()
+        BLUR.content.controls[1].update()
         _element.update()
 
     def open_color_picker(e):
