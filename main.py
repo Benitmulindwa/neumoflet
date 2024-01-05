@@ -16,7 +16,7 @@ def is_color_dark(hex_color):
 
 
 def main(page: Page):
-    color_picker = ColorPicker(color="#000000", width=300)
+    color_picker = ColorPicker(color="#e1d1d3", width=300)
 
     # Source of light
     def light_source(data, **radius):
@@ -30,33 +30,48 @@ def main(page: Page):
             data=data,
         )
 
-    def handle_light(data):
-        DIST = DISTANCE.content.controls[1].value
+    def handle_light(data: str, DIST: int):
+        DIST = DIST // 2
         if data == "top_left":
+            TOP_LEFT.bgcolor = "yellow"
+            TOP_RIGHT.bgcolor = "transparent"
+            BOTTOM_LEFT.bgcolor = "transparent"
+            BOTTOM_RIGHT.bgcolor = "transparent"
             positionX = DIST * -1
             positionY = DIST * -1
         elif data == "top_right":
+            TOP_RIGHT.bgcolor = "yellow"
+            BOTTOM_RIGHT.bgcolor = "transparent"
+            BOTTOM_LEFT.bgcolor = "transparent"
+            TOP_LEFT.bgcolor = "transparent"
             positionX = DIST
             positionY = DIST * -1
         elif data == "bottom_left":
+            BOTTOM_LEFT.bgcolor = "yellow"
+            BOTTOM_RIGHT.bgcolor = "transparent"
+            TOP_RIGHT.bgcolor = "transparent"
+            TOP_LEFT.bgcolor = "transparent"
             positionX = DIST
             positionY = DIST
         elif data == "bottom_right":
+            BOTTOM_RIGHT.bgcolor = "yellow"
+            TOP_RIGHT.bgcolor = "transparent"
+            TOP_LEFT.bgcolor = "transparent"
+            BOTTOM_LEFT.bgcolor = "transparent"
             positionX = DIST * -1
             positionY = DIST
-        else:
-            positionX = DIST * -1
-            positionY = DIST * -1
+        # DISTANCE.content.controls[1].update()
+        page.update()
         return positionX, positionY
 
     # when the light source is clicked
     def _exposure(e):
-        if e.control.data in ["top_left", "top_right", "bottom_right", "bottom_left"]:
-            e.control.bgcolor = "yellow"
         # light position based on positionX and positionY returned by the function handle_light()
-        _element.shadow.offset = handle_light(e.control.data)
+        _element.shadow.offset = handle_light(
+            e.control.data, DISTANCE.content.controls[1].value
+        )
         _element.update()
-        print(e.control.data)
+        # print(e.control.data)
         e.control.update()
 
     TOP_LEFT = light_source("top_left", bottom_right=30)
@@ -64,7 +79,6 @@ def main(page: Page):
     TOP_RIGHT = light_source("top_right", bottom_left=30)
     BOTTOM_LEFT = light_source("bottom_left", top_left=30)
 
-    # L=0.2126*R+0.7152*G+0.0722*B
     def get_slider_value(e):
         if e.control.data == "radius":
             _element.border_radius = e.control.value
@@ -75,8 +89,7 @@ def main(page: Page):
 
         elif e.control.data == "distance":
             distance = e.control.value
-
-            _element.shadow.blur_radius = distance
+            # _element.shadow.blur_radius = distance
 
             # if _element.shadow.offset
             # print()
@@ -128,7 +141,7 @@ def main(page: Page):
         shadow=BoxShadow(
             blur_radius=5,
             color=colors.BLUE_GREY_300,
-            offset=Offset(-50, -50),
+            offset=Offset(-5, -5),
             blur_style=ShadowBlurStyle.NORMAL,
         ),
     )
