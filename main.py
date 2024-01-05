@@ -1,59 +1,6 @@
 from flet import *
 from flet_contrib.color_picker import ColorPicker
-
-
-def is_color_dark(hex_color):
-    # Convert hex color to RGB components
-    r = int(hex_color[1:3], 16) / 255.0
-    g = int(hex_color[3:5], 16) / 255.0
-    b = int(hex_color[5:], 16) / 255.0
-
-    # Calculate relative luminance
-    luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b
-
-    # Check if color is dark (adjust the threshold as needed)
-    return luminance < 0.5
-
-
-def calculate_shadow_colors(background_color):
-    # Validate and clean the background color string
-    background_color = "".join(c for c in background_color if c.isalnum())
-
-    # Convert hex to RGB
-    r, g, b = (
-        int(background_color[0:2], 16),
-        int(background_color[2:4], 16),
-        int(background_color[4:6], 16),
-    )
-
-    # Adjust brightness for shadow and highlight
-    shadow_brightness = 0.8
-    highlight_brightness = 1.2
-
-    # Calculate shadow color
-    shadow_color = "#{:02x}{:02x}{:02x}".format(
-        min(int(r * shadow_brightness), 255),
-        min(int(g * shadow_brightness), 255),
-        min(int(b * shadow_brightness), 255),
-    )
-
-    # Calculate highlight color
-    highlight_color = "#{:02x}{:02x}{:02x}".format(
-        min(int(r * highlight_brightness), 255),
-        min(int(g * highlight_brightness), 255),
-        min(int(b * highlight_brightness), 255),
-    )
-
-    return shadow_color, highlight_color
-
-
-# Example usage
-# background_color = "#e1d1d3"
-
-# shadow_color, highlight_color = calculate_shadow_colors(background_color)
-
-# print("Shadow Color:", shadow_color)
-# print("Highlight Color:", highlight_color)
+from utils import is_color_dark, calculate_shadow_colors
 
 
 def main(page: Page):
@@ -102,7 +49,7 @@ def main(page: Page):
             BOTTOM_LEFT.bgcolor = "transparent"
             positionX = DIST * -1
             positionY = DIST
-        DISTANCE.content.controls[1].update()
+        DISTANCE.content.controls[1].update()  ### <----
         page.update()
         return positionX, positionY
 
@@ -112,8 +59,14 @@ def main(page: Page):
         X, Y = handle_light(e.control.data)
         _element.shadow[1].offset = X, Y
         _element.shadow[0].offset = -X, -Y
+
+        # light position for the setting_container
+        setting_container.shadow[0].offset = -X, -Y
+        setting_container.shadow[1].offset = X, Y
+
+        # Update the involved controls
+        setting_container.update()
         _element.update()
-        # print(e.control.data)
         e.control.update()
 
     TOP_LEFT = light_source_ui("top_left", bottom_right=30)
@@ -244,12 +197,20 @@ def main(page: Page):
         height=450,
         bgcolor=color_picker.color,
         padding=padding.only(30, 20, 30, 20),
-        shadow=BoxShadow(
-            blur_radius=15,
-            color=colors.BLUE_GREY_300,
-            offset=Offset(0, 0),
-            blur_style=ShadowBlurStyle.OUTER,
-        ),
+        shadow=[
+            BoxShadow(
+                blur_radius=5,
+                color=shadow_color,
+                offset=Offset(5, 5),
+                blur_style=ShadowBlurStyle.NORMAL,
+            ),
+            BoxShadow(
+                blur_radius=5,
+                color=highlight_color,
+                offset=Offset(-5, -5),
+                blur_style=ShadowBlurStyle.NORMAL,
+            ),
+        ],
     )
 
     # Change Color
@@ -290,6 +251,10 @@ def main(page: Page):
         setting_container.content.controls[
             6
         ].color = TEXT_SLIDERS_COLOR  # code_text color
+
+        setting_container.shadow[0].color = shadow_color
+        setting_container.shadow[1].color = highlight_color
+
         d.open = False
         page.update()
 
