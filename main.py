@@ -15,23 +15,65 @@ def is_color_dark(hex_color):
     return luminance < 0.5
 
 
+def calculate_shadow_colors(background_color):
+    # Validate and clean the background color string
+    background_color = "".join(c for c in background_color if c.isalnum())
+
+    # Convert hex to RGB
+    r, g, b = (
+        int(background_color[0:2], 16),
+        int(background_color[2:4], 16),
+        int(background_color[4:6], 16),
+    )
+
+    # Adjust brightness for shadow and highlight
+    shadow_brightness = 0.8
+    highlight_brightness = 1.2
+
+    # Calculate shadow color
+    shadow_color = "#{:02x}{:02x}{:02x}".format(
+        min(int(r * shadow_brightness), 255),
+        min(int(g * shadow_brightness), 255),
+        min(int(b * shadow_brightness), 255),
+    )
+
+    # Calculate highlight color
+    highlight_color = "#{:02x}{:02x}{:02x}".format(
+        min(int(r * highlight_brightness), 255),
+        min(int(g * highlight_brightness), 255),
+        min(int(b * highlight_brightness), 255),
+    )
+
+    return shadow_color, highlight_color
+
+
+# Example usage
+# background_color = "#e1d1d3"
+
+# shadow_color, highlight_color = calculate_shadow_colors(background_color)
+
+# print("Shadow Color:", shadow_color)
+# print("Highlight Color:", highlight_color)
+
+
 def main(page: Page):
     color_picker = ColorPicker(color="#e1d1d3", width=300)
+    shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
 
     # Source of light
-    def light_source(data, **radius):
+    def light_source_ui(data, **radius):
         return Container(
             border=border.all(2, "black"),
             border_radius=border_radius.only(**radius),
             width=30,
             height=30,
-            bgcolor="transparent",
+            bgcolor="yellow" if data == "top_left" else "transparent",
             on_click=_exposure,
             data=data,
         )
 
-    def handle_light(data: str, DIST: int):
-        DIST = DIST // 2
+    def handle_light(data):
+        DIST = DISTANCE.content.controls[1].value
         if data == "top_left":
             TOP_LEFT.bgcolor = "yellow"
             TOP_RIGHT.bgcolor = "transparent"
@@ -60,24 +102,24 @@ def main(page: Page):
             BOTTOM_LEFT.bgcolor = "transparent"
             positionX = DIST * -1
             positionY = DIST
-        # DISTANCE.content.controls[1].update()
+        DISTANCE.content.controls[1].update()
         page.update()
         return positionX, positionY
 
     # when the light source is clicked
     def _exposure(e):
         # light position based on positionX and positionY returned by the function handle_light()
-        _element.shadow.offset = handle_light(
-            e.control.data, DISTANCE.content.controls[1].value
-        )
+        X, Y = handle_light(e.control.data)
+        _element.shadow[1].offset = X, Y
+        _element.shadow[0].offset = -X, -Y
         _element.update()
         # print(e.control.data)
         e.control.update()
 
-    TOP_LEFT = light_source("top_left", bottom_right=30)
-    BOTTOM_RIGHT = light_source("bottom_right", top_right=30)
-    TOP_RIGHT = light_source("top_right", bottom_left=30)
-    BOTTOM_LEFT = light_source("bottom_left", top_left=30)
+    TOP_LEFT = light_source_ui("top_left", bottom_right=30)
+    BOTTOM_RIGHT = light_source_ui("bottom_right", top_right=30)
+    TOP_RIGHT = light_source_ui("top_right", bottom_left=30)
+    BOTTOM_LEFT = light_source_ui("bottom_left", top_left=30)
 
     def get_slider_value(e):
         if e.control.data == "radius":
@@ -89,7 +131,9 @@ def main(page: Page):
 
         elif e.control.data == "distance":
             distance = e.control.value
-            # _element.shadow.blur_radius = distance
+            _element.shadow.blur_radius = distance * 2
+            # DISTANCE.content.controls[1].update()
+            _element.update()
 
             # if _element.shadow.offset
             # print()
@@ -100,7 +144,7 @@ def main(page: Page):
         page.update()
 
     # Text - Slider
-    def text_slider(
+    def text_slider_ui(
         txt: str, min: float, max: float, width: int, data, default_val: int = 0
     ) -> Container:
         return Container(
@@ -124,13 +168,17 @@ def main(page: Page):
         )
 
     # Each slider(& its text) is stored inside a variable
-    SIZE = text_slider("Size: ", 10, 350, width=270, data="size", default_val=250)
-    RADIUS = text_slider("Radius: ", 0, 175, width=250, data="radius", default_val=50)
-    DISTANCE = text_slider(
+    SIZE = text_slider_ui("Size: ", 10, 350, width=270, data="size", default_val=250)
+    RADIUS = text_slider_ui(
+        "Radius: ", 0, 175, width=250, data="radius", default_val=50
+    )
+    DISTANCE = text_slider_ui(
         "Distance: ", 5, 50, width=240, data="distance", default_val=5
     )
-    INTENSITY = text_slider("Intensity: ", 0.01, 0.6, width=240, data="intensity")
-    BLUR = text_slider("Blur: ", 0, 100, width=270, data="blur")
+    INTENSITY = text_slider_ui(
+        "Intensity: ", 0.01, 0.6, width=240, data="intensity", default_val=0.15
+    )
+    BLUR = text_slider_ui("Blur: ", 0, 100, width=270, data="blur")
 
     _element = Container(
         border_radius=50,
@@ -138,12 +186,20 @@ def main(page: Page):
         height=250,
         bgcolor=color_picker.color,
         margin=margin.only(left=10, right=10),
-        shadow=BoxShadow(
-            blur_radius=5,
-            color=colors.BLUE_GREY_300,
-            offset=Offset(-5, -5),
-            blur_style=ShadowBlurStyle.NORMAL,
-        ),
+        shadow=[
+            BoxShadow(
+                blur_radius=5,
+                color=shadow_color,
+                offset=Offset(5, 5),
+                blur_style=ShadowBlurStyle.NORMAL,
+            ),
+            BoxShadow(
+                blur_radius=5,
+                color=highlight_color,
+                offset=Offset(-5, -5),
+                blur_style=ShadowBlurStyle.NORMAL,
+            ),
+        ],
     )
     color_picker_container = Container(
         width=32,
@@ -206,7 +262,7 @@ def main(page: Page):
 
         else:
             TEXT_SLIDERS_COLOR = "#001f3f"
-
+        shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
         # Text - Slider color
         for txt_slider in [SIZE, RADIUS, DISTANCE, INTENSITY, BLUR]:
             txt_slider.content.controls[0].content.color = TEXT_SLIDERS_COLOR
@@ -224,6 +280,8 @@ def main(page: Page):
         color_picker_container.bgcolor = color_picker.color
         page.bgcolor = color_picker.color
         _element.bgcolor = color_picker.color
+        _element.shadow[0].color = shadow_color
+        _element.shadow[1].color = highlight_color
         setting_container.bgcolor = color_picker.color
 
         setting_container.content.controls[0].content.controls[
