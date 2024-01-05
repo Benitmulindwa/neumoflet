@@ -4,7 +4,7 @@ from utils import is_color_dark, calculate_shadow_colors
 
 
 def main(page: Page):
-    color_picker = ColorPicker(color="#e1d1d3", width=300)
+    color_picker = ColorPicker(color="#c5b5b5", width=300)
     shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
 
     # Source of light
@@ -19,8 +19,7 @@ def main(page: Page):
             data=data,
         )
 
-    def handle_light(data):
-        DIST = DISTANCE.content.controls[1].value
+    def handle_light(data, DIST):
         if data == "top_left":
             TOP_LEFT.bgcolor = "yellow"
             TOP_RIGHT.bgcolor = "transparent"
@@ -49,14 +48,14 @@ def main(page: Page):
             BOTTOM_LEFT.bgcolor = "transparent"
             positionX = DIST * -1
             positionY = DIST
-        DISTANCE.content.controls[1].update()  ### <----
+
         page.update()
         return positionX, positionY
 
     # when the light source is clicked
     def _exposure(e):
         # light position based on positionX and positionY returned by the function handle_light()
-        X, Y = handle_light(e.control.data)
+        X, Y = handle_light(e.control.data, DISTANCE.content.controls[1].value * 0.1)
         _element.shadow[1].offset = X, Y
         _element.shadow[0].offset = -X, -Y
 
@@ -84,12 +83,24 @@ def main(page: Page):
 
         elif e.control.data == "distance":
             distance = e.control.value
-            _element.shadow.blur_radius = distance * 2
-            # DISTANCE.content.controls[1].update()
+            _element.shadow[0].blur_radius = distance
+            _element.shadow[1].blur_radius = distance
+            BLUR.content.controls[1].value = distance * 2
+            BLUR.content.controls[1].update()
             _element.update()
-
+        elif e.control.data == "blur":
+            _element.shadow[0].blur_radius = e.control.value
             # if _element.shadow.offset
             # print()
+        elif e.control.data == "intensity":
+            intensity = e.control.value
+
+            shadow_color, highlight_color = calculate_shadow_colors(
+                color_picker.color, intensity
+            )
+            _element.shadow[0].color = shadow_color
+            _element.shadow[1].color = highlight_color
+
         _element.update()
 
     def open_color_picker(e):
@@ -126,12 +137,12 @@ def main(page: Page):
         "Radius: ", 0, 175, width=250, data="radius", default_val=50
     )
     DISTANCE = text_slider_ui(
-        "Distance: ", 5, 50, width=240, data="distance", default_val=5
+        "Distance: ", 5, 50, width=240, data="distance", default_val=20
     )
     INTENSITY = text_slider_ui(
         "Intensity: ", 0.01, 0.6, width=240, data="intensity", default_val=0.15
     )
-    BLUR = text_slider_ui("Blur: ", 0, 100, width=270, data="blur")
+    BLUR = text_slider_ui("Blur: ", 0, 100, width=270, data="blur", default_val=60)
 
     _element = Container(
         border_radius=50,
@@ -157,7 +168,7 @@ def main(page: Page):
     color_picker_container = Container(
         width=32,
         height=32,
-        bgcolor="#e1d1d3",
+        bgcolor=color_picker.color,
         border=border.all(2, "black"),
         on_click=open_color_picker,
     )
@@ -187,7 +198,8 @@ def main(page: Page):
                 Container(
                     bgcolor="yellow",
                     width=380,
-                    height=100,
+                    height=120,
+                    margin=margin.only(top=5),
                 ),
             ],
             spacing=0,
@@ -241,6 +253,7 @@ def main(page: Page):
         color_picker_container.bgcolor = color_picker.color
         page.bgcolor = color_picker.color
         _element.bgcolor = color_picker.color
+        # Shadow colors for _element
         _element.shadow[0].color = shadow_color
         _element.shadow[1].color = highlight_color
         setting_container.bgcolor = color_picker.color
@@ -252,6 +265,7 @@ def main(page: Page):
             6
         ].color = TEXT_SLIDERS_COLOR  # code_text color
 
+        # shadow colors for setting_container
         setting_container.shadow[0].color = shadow_color
         setting_container.shadow[1].color = highlight_color
 

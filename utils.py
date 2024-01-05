@@ -11,7 +11,7 @@ def is_color_dark(hex_color):
     return luminance < 0.5
 
 
-def calculate_shadow_colors(background_color):
+def calculate_shadow_colors(background_color, intens: int = 0):
     # Validate and clean the background color string
     background_color = "".join(c for c in background_color if c.isalnum())
 
@@ -24,7 +24,7 @@ def calculate_shadow_colors(background_color):
 
     # Adjust brightness for shadow and highlight
     shadow_brightness = 0.8
-    highlight_brightness = 1.2
+    highlight_brightness = 1.1
 
     # Calculate shadow color
     shadow_color = "#{:02x}{:02x}{:02x}".format(
@@ -40,4 +40,26 @@ def calculate_shadow_colors(background_color):
         min(int(b * highlight_brightness), 255),
     )
 
+    if intens:
+        shadow_color = get_color_intensity(background_color, intens * -1)
+        highlight_color = get_color_intensity(background_color, intens)
+
     return shadow_color, highlight_color
+
+
+def get_color_intensity(hex, intensity):
+    # Validate hex string
+    hex = "".join(c for c in hex if c.isalnum())
+    if len(hex) < 6:
+        hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2]
+
+    lum = intensity or 0
+
+    # Convert to decimal and change luminosity
+    color = "#"
+    for i in range(0, 3):
+        c = int(hex[i * 2 : i * 2 + 2], 16)
+        c = min(max(0, c + c * lum), 255)
+        color += format(int(c), "02x")
+
+    return color
