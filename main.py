@@ -125,7 +125,9 @@ def main(page: Page):
         return Container(
             Row(
                 [
-                    Container(Text(txt, size=15, weight=FontWeight.W_600)),
+                    Container(
+                        Text(txt, size=15, weight=FontWeight.W_600, font_family="muli")
+                    ),
                     Slider(
                         min=min,
                         max=max,
@@ -143,17 +145,15 @@ def main(page: Page):
         )
 
     # Each slider(& its text) is stored inside a variable
-    SIZE = text_slider_ui("Size: ", 10, 350, width=270, data="size", default_val=250)
-    RADIUS = text_slider_ui(
-        "Radius: ", 0, 175, width=250, data="radius", default_val=50
-    )
+    SIZE = text_slider_ui("Size:", 10, 350, width=270, data="size", default_val=250)
+    RADIUS = text_slider_ui("Radius:", 0, 175, width=250, data="radius", default_val=50)
     DISTANCE = text_slider_ui(
-        "Distance: ", 5, 50, width=240, data="distance", default_val=20
+        "Distance:", 5, 50, width=240, data="distance", default_val=20
     )
     INTENSITY = text_slider_ui(
-        "Intensity: ", 0.01, 0.6, width=240, data="intensity", default_val=0.15
+        "Intensity:", 0.01, 0.6, width=240, data="intensity", default_val=0.15
     )
-    BLUR = text_slider_ui("Blur: ", 0, 100, width=270, data="blur", default_val=60)
+    BLUR = text_slider_ui("Blur:", 0, 100, width=270, data="blur", default_val=60)
 
     _element = Container(
         border_radius=50,
@@ -190,6 +190,37 @@ def main(page: Page):
         on_click=open_color_picker,
     )
 
+    generated_code = f"""
+
+``` python
+ft.Container(
+            width=200,
+            height=200,
+            border_radius=50,
+            bgcolor="{color_picker.color}",
+            
+            shadow=[
+                ft.BoxShadow(
+                    offset=ft.Offset(20, 20),
+                    blur_radius=60,
+                    color="{shadow_color}",
+                    blur_style=ft.ShadowBlurStyle.INNER,
+                ),
+                ft.BoxShadow(
+                    offset=ft.Offset(-20, -20),
+                    blur_radius=60,
+                    color="{highlight_color}",
+                    blur_style=ft.ShadowBlurStyle.INNER,
+                ),
+            ],
+        )
+
+
+```
+
+
+"""
+
     setting_container = Container(
         Column(
             [
@@ -197,9 +228,10 @@ def main(page: Page):
                     Row(
                         [
                             Text(
-                                "Pick a color: ",
+                                "Pick a color:",
                                 size=15,
                                 weight=FontWeight.W_600,
+                                font_family="muli",
                             ),
                             color_picker_container,
                         ]
@@ -211,12 +243,24 @@ def main(page: Page):
                 DISTANCE,
                 INTENSITY,
                 BLUR,
-                Text("Code: ", size=15, weight=FontWeight.W_600),
+                Text("Code:", size=15, weight=FontWeight.W_600, font_family="muli"),
                 Container(
-                    bgcolor="yellow",
                     width=380,
-                    height=120,
+                    height=110,
                     margin=margin.only(top=5),
+                    content=Column(
+                        [
+                            Markdown(
+                                generated_code,
+                                selectable=True,
+                                extension_set=MarkdownExtensionSet.GITHUB_WEB,
+                                code_theme="dark",
+                                code_style=TextStyle(font_family="mono", size=8),
+                            )
+                        ],
+                        scroll="always",
+                        alignment=CrossAxisAlignment.CENTER,
+                    ),
                 ),
             ],
             spacing=0,
@@ -343,11 +387,7 @@ def main(page: Page):
         spacing=10,
     )
     title = Container(
-        Text(
-            "Neumoflet.io",
-            size=50,
-            weight=FontWeight.BOLD,
-        )
+        Text("Neumoflet.io", size=50, weight=FontWeight.BOLD, font_family="muli")
     )
     title.alignment = alignment.center
     title_container = Row(
@@ -357,7 +397,11 @@ def main(page: Page):
                 Column(
                     [
                         title,
-                        Text("Generate Soft-UI Flet code"),
+                        Text(
+                            "Generate Soft-UI Flet code",
+                            weight=FontWeight.W_500,
+                            font_family="muli",
+                        ),
                     ],
                     spacing=0,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
@@ -379,10 +423,14 @@ def main(page: Page):
     )
 
     page.bgcolor = color_picker.color
+    page.fonts = {
+        "muli": "/fonts/Muli-Regular.ttf",
+        "mono": "/fonts/RobotoMono-Thin.ttf",
+    }
 
     page.theme_mode = "light"
     page.add(title_container, main_content)
 
 
 if __name__ == "__main__":
-    app(target=main)
+    app(target=main, assets_dir="assets")
