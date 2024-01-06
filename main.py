@@ -92,7 +92,7 @@ def main(page: Page):
             distance = e.control.value
             _element.shadow[0].blur_radius = distance
             _element.shadow[1].blur_radius = distance
-            BLUR.content.controls[1].value = distance * 2
+            BLUR.content.controls[1].value = distance * 2  # Blur Ui
             _element.shadow[0].blur_radius = distance
             _element.shadow[1].blur_radius = distance * 2
 
