@@ -84,6 +84,7 @@ def main(page: Page):
             DISTANCE.content.controls[1].value = size // 10
             _element.shadow[0].blur_radius = size // 10
             _element.shadow[1].blur_radius = size // 10
+            # print(code.value)
 
         elif e.control.data == "radius":
             _element.border_radius = e.control.value
@@ -108,7 +109,7 @@ def main(page: Page):
             )
             _element.shadow[0].color = shadow_color
             _element.shadow[1].color = highlight_color
-
+        code.update()
         RADIUS.content.controls[1].update()
         DISTANCE.content.controls[1].update()
         BLUR.content.controls[1].update()
@@ -194,23 +195,23 @@ def main(page: Page):
 
 ``` python
 ft.Container(
-            width=200,
-            height=200,
-            border_radius=50,
+            width={SIZE.content.controls[1].value},
+            height={SIZE.content.controls[1].value},
+            border_radius={RADIUS.content.controls[1].value},
             bgcolor="{color_picker.color}",
             
             shadow=[
                 ft.BoxShadow(
-                    offset=ft.Offset(20, 20),
-                    blur_radius=60,
+                    offset=ft.Offset({DISTANCE.content.controls[1].value}, {DISTANCE.content.controls[1].value}),
+                    blur_radius={BLUR.content.controls[1].value},
                     color="{shadow_color}",
-                    blur_style=ft.ShadowBlurStyle.INNER,
+                    blur_style=ft.ShadowBlurStyle.NORMAL,
                 ),
                 ft.BoxShadow(
-                    offset=ft.Offset(-20, -20),
+                    offset=ft.Offset(-{DISTANCE.content.controls[1].value}, -{DISTANCE.content.controls[1].value}),
                     blur_radius=60,
                     color="{highlight_color}",
-                    blur_style=ft.ShadowBlurStyle.INNER,
+                    blur_style=ft.ShadowBlurStyle.NORMAL,
                 ),
             ],
         )
@@ -218,8 +219,14 @@ ft.Container(
 
 ```
 
-
 """
+    code = Markdown(
+        generated_code,
+        selectable=True,
+        extension_set=MarkdownExtensionSet.GITHUB_WEB,
+        code_theme="dark",
+        code_style=TextStyle(font_family="mono", size=8),
+    )
 
     setting_container = Container(
         Column(
@@ -250,13 +257,7 @@ ft.Container(
                     margin=margin.only(top=5),
                     content=Column(
                         [
-                            Markdown(
-                                generated_code,
-                                selectable=True,
-                                extension_set=MarkdownExtensionSet.GITHUB_WEB,
-                                code_theme="dark",
-                                code_style=TextStyle(font_family="mono", size=8),
-                            )
+                            code,
                         ],
                         scroll="always",
                         alignment=CrossAxisAlignment.CENTER,
@@ -293,8 +294,13 @@ ft.Container(
         # Check if the picked color is dark
         if is_color_dark(color_picker.color):
             TEXT_SLIDERS_COLOR = "white"
+            code.code_theme = "lightfair"
+            page.theme_mode = "light"
 
         else:
+            code.code_theme = "atom-on-dark"
+            page.theme_mode = "dark"
+
             TEXT_SLIDERS_COLOR = "#001f3f"
         shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
         # Text - Slider color
@@ -331,6 +337,7 @@ ft.Container(
         setting_container.shadow[1].color = highlight_color
 
         d.open = False
+        code.update()
         page.update()
 
     # Handle the closing of the Alert Dialog for color picker
