@@ -7,6 +7,10 @@ def main(page: Page):
     color_picker = ColorPicker(color="#c5b5b5", width=300)
     shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
 
+    def copy_code(e):
+        page.set_clipboard("_element")
+        page.update()
+
     # Source of light
     def light_source_ui(data, **radius):
         return Container(
@@ -74,6 +78,11 @@ def main(page: Page):
     BOTTOM_LEFT = light_source_ui("bottom_left", top_left=30)
 
     def get_slider_value(e):
+        size = SIZE.content.controls[1].value
+        radius = RADIUS.content.controls[1].value
+        distance = DISTANCE.content.controls[1].value
+        blur = BLUR.content.controls[1].value
+        intensity = INTENSITY.content.controls[1].value
         if e.control.data == "size":
             size = e.control.value
             _element.width = size
@@ -87,7 +96,8 @@ def main(page: Page):
             # print(code.value)
 
         elif e.control.data == "radius":
-            _element.border_radius = e.control.value
+            radius = e.control.value
+            _element.border_radius = radius
 
         elif e.control.data == "distance":
             distance = e.control.value
@@ -98,8 +108,9 @@ def main(page: Page):
             _element.shadow[1].blur_radius = distance * 2
 
         elif e.control.data == "blur":
-            _element.shadow[0].blur_radius = e.control.value
-            _element.shadow[1].blur_radius = e.control.value
+            blur = e.control.value
+            _element.shadow[0].blur_radius = blur
+            _element.shadow[1].blur_radius = blur
 
         elif e.control.data == "intensity":
             intensity = e.control.value
@@ -109,6 +120,7 @@ def main(page: Page):
             )
             _element.shadow[0].color = shadow_color
             _element.shadow[1].color = highlight_color
+        print(size, radius, blur, intensity)
         code.update()
         RADIUS.content.controls[1].update()
         DISTANCE.content.controls[1].update()
@@ -191,9 +203,8 @@ def main(page: Page):
         on_click=open_color_picker,
     )
 
-    generated_code = f"""
-
-``` python
+    generated_code = Text(
+        f"""
 ft.Container(
             width={SIZE.content.controls[1].value},
             height={SIZE.content.controls[1].value},
@@ -216,16 +227,27 @@ ft.Container(
             ],
         )
 
-
-```
-
 """
+    )
     code = Markdown(
         generated_code,
-        selectable=True,
         extension_set=MarkdownExtensionSet.GITHUB_WEB,
         code_theme="dark",
         code_style=TextStyle(font_family="mono", size=8),
+    )
+
+    copy_bt = Container(
+        Text(
+            "Copy",
+            color="black",
+            text_align="center",
+            weight=FontWeight.W_600,
+            font_family="muli",
+        ),
+        width=50,
+        height=22,
+        bgcolor="green",
+        on_click=copy_code,
     )
 
     setting_container = Container(
@@ -255,12 +277,15 @@ ft.Container(
                     width=380,
                     height=110,
                     margin=margin.only(top=5),
-                    content=Column(
+                    content=Stack(
                         [
-                            code,
-                        ],
-                        scroll="always",
-                        alignment=CrossAxisAlignment.CENTER,
+                            Column(
+                                [code],
+                                scroll="always",
+                                alignment=CrossAxisAlignment.CENTER,
+                            ),
+                            Row([copy_bt], alignment=MainAxisAlignment.END),
+                        ]
                     ),
                 ),
             ],
@@ -302,6 +327,7 @@ ft.Container(
             page.theme_mode = "dark"
 
             TEXT_SLIDERS_COLOR = "#001f3f"
+        code.update()
         shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
         # Text - Slider color
         for txt_slider in [SIZE, RADIUS, DISTANCE, INTENSITY, BLUR]:
@@ -337,7 +363,7 @@ ft.Container(
         setting_container.shadow[1].color = highlight_color
 
         d.open = False
-        code.update()
+
         page.update()
 
     # Handle the closing of the Alert Dialog for color picker
