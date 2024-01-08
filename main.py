@@ -8,7 +8,7 @@ def main(page: Page):
     shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
 
     def copy_code(e):
-        page.set_clipboard("_element")
+        page.set_clipboard(code.value.replace("python", "").replace("```", ""))
         page.update()
 
     # Source of light
@@ -120,7 +120,33 @@ def main(page: Page):
             )
             _element.shadow[0].color = shadow_color
             _element.shadow[1].color = highlight_color
-        print(size, radius, blur, intensity)
+        code.value = f"""
+```python
+ft.Container(
+            width={int(size)},
+            height={int(size)},
+            border_radius={int(radius)},
+            bgcolor="{color_picker.color}",
+            shadow=[
+                ft.BoxShadow(
+                    offset=ft.Offset({int(distance)}, {int(distance)}),
+                    blur_radius={int(blur)},
+                    
+                    blur_style=ft.ShadowBlurStyle.NORMAL,
+                ),
+                ft.BoxShadow(
+                    offset=ft.Offset(-{int(distance)}, -{int(distance)}),
+                    blur_radius={int(blur)},
+                    
+                    blur_style=ft.ShadowBlurStyle.NORMAL,
+                ),
+            ],
+        )
+
+```
+
+"""
+        # print(size, radius, blur, intensity)
         code.update()
         RADIUS.content.controls[1].update()
         DISTANCE.content.controls[1].update()
@@ -205,12 +231,12 @@ def main(page: Page):
 
     generated_code = Text(
         f"""
+```python
 ft.Container(
             width={SIZE.content.controls[1].value},
             height={SIZE.content.controls[1].value},
             border_radius={RADIUS.content.controls[1].value},
             bgcolor="{color_picker.color}",
-            
             shadow=[
                 ft.BoxShadow(
                     offset=ft.Offset({DISTANCE.content.controls[1].value}, {DISTANCE.content.controls[1].value}),
@@ -227,10 +253,12 @@ ft.Container(
             ],
         )
 
+```
+
 """
     )
     code = Markdown(
-        generated_code,
+        generated_code.value,
         extension_set=MarkdownExtensionSet.GITHUB_WEB,
         code_theme="dark",
         code_style=TextStyle(font_family="mono", size=8),
