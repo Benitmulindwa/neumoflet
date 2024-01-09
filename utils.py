@@ -70,7 +70,7 @@ def display_code(
     highlight_color,
     size: int = 250,
     radius: int = 50,
-    distance: int = 20,
+    distance: int = -20,
     blur: int = 60,
     color="#c5b5b5",
 ):

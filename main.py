@@ -2,6 +2,7 @@ from flet import *
 from flet_contrib.color_picker import ColorPicker
 from utils import is_color_dark, calculate_shadow_colors, display_code
 from ui import *
+import math
 
 
 def main(page: Page):
@@ -54,7 +55,7 @@ def main(page: Page):
         shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
 
         # light position based on positionX and positionY returned by the function handle_light()
-        X, Y = handle_light(e.control.data, DISTANCE.content.controls[1].value)
+        X, Y = handle_light(e.control.data, distance)
 
         _element.shadow[0].offset = -X, -Y
         _element.shadow[1].offset = X, Y
@@ -68,7 +69,7 @@ def main(page: Page):
             highlight_color,
             size,
             radius,
-            (X, Y),
+            (int(X), int(Y)),
             blur,
             color_picker.color,
         )
@@ -130,13 +131,19 @@ def main(page: Page):
             _element.shadow[0].color = shadow_color
             _element.shadow[1].color = highlight_color
 
+        if type(_element.shadow[1].offset) == tuple:
+            X, Y = _element.shadow[1].offset
+
+        else:
+            X, Y = _element.shadow[1].offset.x, _element.shadow[1].offset.y
+
         # Update the code
         code.value = display_code(
             shadow_color,
             highlight_color,
             size,
             radius,
-            (distance, distance),
+            (int(math.copysign(distance, X)), int(math.copysign(distance, Y))),
             blur,
             color_picker.color,
         )
@@ -176,7 +183,7 @@ def main(page: Page):
 
     _element = element(shadow_color, highlight_color)
 
-    print(_element.shadow[0].offset)
+    # print(_element.shadow[0].offset)
 
     color_picker_container = Container(
         width=32,
@@ -187,7 +194,7 @@ def main(page: Page):
     )
 
     generated_code = display_code(
-        shadow_color, highlight_color, color=color_picker.color
+        shadow_color, highlight_color, distance=(-20, -20), color=color_picker.color
     )
 
     code = Markdown(
@@ -281,18 +288,16 @@ def main(page: Page):
         radius = RADIUS.content.controls[1].value
         distance = DISTANCE.content.controls[1].value
         blur = BLUR.content.controls[1].value
+
         # Check the luminance of  the picked color
         if is_color_dark(color_picker.color):
             TEXT_SLIDERS_COLOR = "white"
-            # code.code_theme = "lightfair"
-            # page.theme_mode = "light"
 
         else:
-            # code.code_theme = "atom-on-dark"
-            # page.theme_mode = "dark"
             TEXT_SLIDERS_COLOR = "#001f3f"
 
         shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
+
         # Text - Slider color
         for txt_slider in [SIZE, RADIUS, DISTANCE, INTENSITY, BLUR]:
             txt_slider.content.controls[0].content.color = TEXT_SLIDERS_COLOR
@@ -310,6 +315,7 @@ def main(page: Page):
         color_picker_container.bgcolor = color_picker.color
         page.bgcolor = color_picker.color
         _element.bgcolor = color_picker.color
+
         # Shadow colors for _element
         _element.shadow[0].color = shadow_color
         _element.shadow[1].color = highlight_color
@@ -325,12 +331,19 @@ def main(page: Page):
         # shadow colors for setting_container
         setting_container.shadow[0].color = shadow_color
         setting_container.shadow[1].color = highlight_color
+
+        if type(_element.shadow[1].offset) == tuple:
+            X, Y = _element.shadow[1].offset
+
+        else:
+            X, Y = _element.shadow[1].offset.x, _element.shadow[1].offset.y
+
         code.value = display_code(
             shadow_color,
             highlight_color,
             size,
             radius,
-            distance,
+            (int(math.copysign(distance, X)), int(math.copysign(distance, Y))),
             blur,
             color_picker.color,
         )
@@ -392,7 +405,7 @@ def main(page: Page):
         spacing=10,
     )
     title = Container(Text("Neumoflet.ui", size=50, font_family="muli"))
-    # title.alignment = alignment.center
+
     title_container = Row(
         [
             Container(width=150),
@@ -402,7 +415,7 @@ def main(page: Page):
                         title,
                         Text(
                             "Generate Soft Flet UI code",
-                            weight=FontWeight.W_500,
+                            weight=FontWeight.W_600,
                             font_family="muli",
                         ),
                     ],
