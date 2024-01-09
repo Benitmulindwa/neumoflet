@@ -1,6 +1,44 @@
 from flet import *
 
 
+def element(
+    shadow_color,
+    highlight_color,
+    size: int = 250,
+    radius: int = 50,
+    distance: int = 20,
+    blur: int = 60,
+    color="#c5b5b5",
+):
+    return Container(
+        border_radius=radius,
+        width=size,
+        height=size,
+        bgcolor=color,
+        margin=margin.only(left=10, right=10),
+        shadow=[
+            BoxShadow(
+                blur_radius=blur,
+                color=shadow_color,
+                offset=Offset(
+                    distance,
+                    distance,
+                ),
+                blur_style=ShadowBlurStyle.NORMAL,
+            ),
+            BoxShadow(
+                blur_radius=blur,
+                color=highlight_color,
+                offset=Offset(
+                    -distance,
+                    -distance,
+                ),
+                blur_style=ShadowBlurStyle.NORMAL,
+            ),
+        ],
+    )
+
+
 # Source of light
 def light_source_ui(event, data, **radius):
     return Container(

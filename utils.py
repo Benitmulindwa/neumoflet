@@ -62,3 +62,42 @@ def get_color_intensity(hex, intensity):
         color += format(int(c), "02x")
 
     return color
+
+
+# To display the generated code
+def display_code(
+    shadow_color,
+    highlight_color,
+    size: int = 250,
+    radius: int = 50,
+    distance: int = 20,
+    blur: int = 60,
+    color="#c5b5b5",
+):
+    code = f"""
+```python
+ft.Container(
+            width = {int(size)},
+            height = {int(size)},
+            border_radius = {int(radius)},
+            bgcolor = "{color}",
+            shadow = [
+                ft.BoxShadow(
+                    offset = ft.Offset({int(distance)}, {int(distance)}),
+                    blur_radius = {int(blur)},
+                    color = "{shadow_color}",
+                    blur_style = ft.ShadowBlurStyle.NORMAL,
+                ),
+                ft.BoxShadow(
+                    offset = ft.Offset(-{int(distance)}, -{int(distance)}),
+                    blur_radius = {int(blur)},
+                    color = "{highlight_color}",
+                    blur_style = ft.ShadowBlurStyle.NORMAL,
+                ),
+            ],
+        )
+
+```
+
+"""
+    return code

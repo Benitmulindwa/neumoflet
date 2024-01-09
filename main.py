@@ -1,45 +1,7 @@
 from flet import *
 from flet_contrib.color_picker import ColorPicker
-from utils import is_color_dark, calculate_shadow_colors
+from utils import is_color_dark, calculate_shadow_colors, display_code
 from ui import *
-
-
-def display_code(
-    shadow_color,
-    highlight_color,
-    size: int = 250,
-    radius: int = 50,
-    distance: int = 20,
-    blur: int = 60,
-    color="#c5b5b5",
-):
-    code = f"""
-```python
-ft.Container(
-            width={int(size)},
-            height={int(size)},
-            border_radius={int(radius)},
-            bgcolor="{color}",
-            shadow=[
-                ft.BoxShadow(
-                    offset=ft.Offset({int(distance)}, {int(distance)}),
-                    blur_radius={int(blur)},
-                    color="{shadow_color}",
-                    blur_style=ft.ShadowBlurStyle.NORMAL,
-                ),
-                ft.BoxShadow(
-                    offset=ft.Offset(-{int(distance)}, -{int(distance)}),
-                    blur_radius={int(blur)},
-                    color="{highlight_color}",
-                    blur_style=ft.ShadowBlurStyle.NORMAL,
-                ),
-            ],
-        )
-
-```
-
-"""
-    return code
 
 
 def main(page: Page):
@@ -182,37 +144,19 @@ def main(page: Page):
         get_slider_value, "Distance:", 5, 50, width=240, data="distance", default_val=20
     )
     INTENSITY = text_slider_ui(
-        "Intensity:", 0.01, 0.6, width=240, data="intensity", default_val=0.15
+        get_slider_value,
+        "Intensity:",
+        0.01,
+        0.6,
+        width=240,
+        data="intensity",
+        default_val=0.15,
     )
-    BLUR = text_slider_ui("Blur:", 0, 100, width=270, data="blur", default_val=60)
+    BLUR = text_slider_ui(
+        get_slider_value, "Blur:", 0, 100, width=270, data="blur", default_val=60
+    )
 
-    _element = Container(
-        border_radius=50,
-        width=250,
-        height=250,
-        bgcolor=color_picker.color,
-        margin=margin.only(left=10, right=10),
-        shadow=[
-            BoxShadow(
-                blur_radius=DISTANCE.content.controls[1].value,
-                color=shadow_color,
-                offset=Offset(
-                    DISTANCE.content.controls[1].value,
-                    DISTANCE.content.controls[1].value,
-                ),
-                blur_style=ShadowBlurStyle.NORMAL,
-            ),
-            BoxShadow(
-                blur_radius=DISTANCE.content.controls[1].value,
-                color=highlight_color,
-                offset=Offset(
-                    -DISTANCE.content.controls[1].value,
-                    -DISTANCE.content.controls[1].value,
-                ),
-                blur_style=ShadowBlurStyle.NORMAL,
-            ),
-        ],
-    )
+    _element = element(shadow_color, highlight_color)
     color_picker_container = Container(
         width=32,
         height=32,
@@ -227,9 +171,9 @@ def main(page: Page):
 
     code = Markdown(
         generated_code,
-        extension_set=MarkdownExtensionSet.GITHUB_WEB,
+        extension_set=MarkdownExtensionSet.GITHUB_FLAVORED,
         code_theme="dark",
-        code_style=TextStyle(font_family="mono", size=8),
+        code_style=TextStyle(size=10),
     )
 
     copy_bt = Container(
@@ -316,7 +260,6 @@ def main(page: Page):
         radius = RADIUS.content.controls[1].value
         distance = DISTANCE.content.controls[1].value
         blur = BLUR.content.controls[1].value
-        intensity = INTENSITY.content.controls[1].value
         # Check the luminance of  the picked color
         if is_color_dark(color_picker.color):
             TEXT_SLIDERS_COLOR = "white"
@@ -427,9 +370,7 @@ def main(page: Page):
         alignment=MainAxisAlignment.CENTER,
         spacing=10,
     )
-    title = Container(
-        Text("Neumoflet.io", size=50, weight=FontWeight.BOLD, font_family="muli")
-    )
+    title = Container(Text("Neumoflet.ui", size=50, font_family="muli"))
     title.alignment = alignment.center
     title_container = Row(
         [
@@ -467,7 +408,6 @@ def main(page: Page):
 
     page.fonts = {
         "muli": "/fonts/Muli-Regular.ttf",
-        "mono": "/fonts/RobotoMono-Thin.ttf",
     }
 
     page.theme_mode = "light"
