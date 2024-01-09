@@ -1,6 +1,7 @@
 from flet import *
 from flet_contrib.color_picker import ColorPicker
 from utils import is_color_dark, calculate_shadow_colors
+from ui import *
 
 
 def display_code(
@@ -49,18 +50,6 @@ def main(page: Page):
         # e.control.bgcolor = "#7fff00"
         page.set_clipboard(code.value.replace("python", "").replace("```", ""))
         page.update()
-
-    # Source of light
-    def light_source_ui(data, **radius):
-        return Container(
-            border=border.all(2, "black"),
-            border_radius=border_radius.only(**radius),
-            width=30,
-            height=30,
-            bgcolor="yellow" if data == "top_left" else "transparent",
-            on_click=_exposure,
-            data=data,
-        )
 
     def handle_light(data, DIST):
         if data == "top_left":
@@ -111,10 +100,10 @@ def main(page: Page):
         _element.update()
         e.control.update()
 
-    TOP_LEFT = light_source_ui("top_left", bottom_right=30)
-    BOTTOM_RIGHT = light_source_ui("bottom_right", top_right=30)
-    TOP_RIGHT = light_source_ui("top_right", bottom_left=30)
-    BOTTOM_LEFT = light_source_ui("bottom_left", top_left=30)
+    TOP_LEFT = light_source_ui(_exposure, "top_left", bottom_right=30)
+    BOTTOM_RIGHT = light_source_ui(_exposure, "bottom_right", top_right=30)
+    TOP_RIGHT = light_source_ui(_exposure, "top_right", bottom_left=30)
+    BOTTOM_LEFT = light_source_ui(_exposure, "bottom_left", top_left=30)
 
     def get_slider_value(e):
         size = SIZE.content.controls[1].value
@@ -182,37 +171,15 @@ def main(page: Page):
         d.open = True
         page.update()
 
-    # Text - Slider
-    def text_slider_ui(
-        txt: str, min: float, max: float, width: int, data, default_val: int = 0
-    ) -> Container:
-        return Container(
-            Row(
-                [
-                    Container(
-                        Text(txt, size=15, weight=FontWeight.W_600, font_family="muli")
-                    ),
-                    Slider(
-                        min=min,
-                        max=max,
-                        divisions=10,
-                        value=default_val,
-                        label="{value}",
-                        width=width,
-                        active_color="#164863",
-                        inactive_color="#164863",
-                        on_change=get_slider_value,
-                        data=data,
-                    ),
-                ]
-            ),
-        )
-
     # Each slider(& its text) is stored inside a variable
-    SIZE = text_slider_ui("Size:", 10, 350, width=270, data="size", default_val=250)
-    RADIUS = text_slider_ui("Radius:", 0, 175, width=250, data="radius", default_val=50)
+    SIZE = text_slider_ui(
+        get_slider_value, "Size:", 10, 350, width=270, data="size", default_val=250
+    )
+    RADIUS = text_slider_ui(
+        get_slider_value, "Radius:", 0, 175, width=250, data="radius", default_val=50
+    )
     DISTANCE = text_slider_ui(
-        "Distance:", 5, 50, width=240, data="distance", default_val=20
+        get_slider_value, "Distance:", 5, 50, width=240, data="distance", default_val=20
     )
     INTENSITY = text_slider_ui(
         "Intensity:", 0.01, 0.6, width=240, data="intensity", default_val=0.15

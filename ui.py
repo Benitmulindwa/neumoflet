@@ -1,6 +1,19 @@
 from flet import *
 
 
+# Source of light
+def light_source_ui(event, data, **radius):
+    return Container(
+        border=border.all(2, "black"),
+        border_radius=border_radius.only(**radius),
+        width=30,
+        height=30,
+        bgcolor="yellow" if data == "top_left" else "transparent",
+        on_click=event,
+        data=data,
+    )
+
+
 # Text - Slider
 def text_slider_ui(
     event, txt: str, min: float, max: float, width: int, data, default_val: int = 0
