@@ -43,24 +43,42 @@ def main(page: Page):
             positionX = DIST * -1
             positionY = DIST
 
-        page.update()
         return positionX, positionY
 
     # when the light source is clicked
     def _exposure(e):
+        size = SIZE.content.controls[1].value
+        radius = RADIUS.content.controls[1].value
+        distance = DISTANCE.content.controls[1].value
+        blur = BLUR.content.controls[1].value
+        shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
+
         # light position based on positionX and positionY returned by the function handle_light()
         X, Y = handle_light(e.control.data, DISTANCE.content.controls[1].value)
-        _element.shadow[1].offset = X, Y
+
         _element.shadow[0].offset = -X, -Y
+        _element.shadow[1].offset = X, Y
 
         # light position for the setting_container
         setting_container.shadow[0].offset = -X, -Y
         setting_container.shadow[1].offset = X, Y
 
+        code.value = display_code(
+            shadow_color,
+            highlight_color,
+            size,
+            radius,
+            (X, Y),
+            blur,
+            color_picker.color,
+        )
+
         # Update the involved controls
+        code.update()
         setting_container.update()
         _element.update()
         e.control.update()
+        page.update()
 
     TOP_LEFT = light_source_ui(_exposure, "top_left", bottom_right=30)
     BOTTOM_RIGHT = light_source_ui(_exposure, "bottom_right", top_right=30)
@@ -72,7 +90,7 @@ def main(page: Page):
         radius = RADIUS.content.controls[1].value
         distance = DISTANCE.content.controls[1].value
         blur = BLUR.content.controls[1].value
-        intensity = INTENSITY.content.controls[1].value
+
         shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
 
         if e.control.data == "size":
@@ -118,7 +136,7 @@ def main(page: Page):
             highlight_color,
             size,
             radius,
-            distance,
+            (distance, distance),
             blur,
             color_picker.color,
         )
@@ -157,6 +175,9 @@ def main(page: Page):
     )
 
     _element = element(shadow_color, highlight_color)
+
+    print(_element.shadow[0].offset)
+
     color_picker_container = Container(
         width=32,
         height=32,
@@ -371,7 +392,7 @@ def main(page: Page):
         spacing=10,
     )
     title = Container(Text("Neumoflet.ui", size=50, font_family="muli"))
-    title.alignment = alignment.center
+    # title.alignment = alignment.center
     title_container = Row(
         [
             Container(width=150),
@@ -380,7 +401,7 @@ def main(page: Page):
                     [
                         title,
                         Text(
-                            "Generate Soft-UI Flet code",
+                            "Generate Soft Flet UI code",
                             weight=FontWeight.W_500,
                             font_family="muli",
                         ),

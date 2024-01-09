@@ -74,6 +74,8 @@ def display_code(
     blur: int = 60,
     color="#c5b5b5",
 ):
+    if type(distance) == tuple:
+        X, Y = distance
     code = f"""
 ```python
 ft.Container(
@@ -83,13 +85,13 @@ ft.Container(
             bgcolor = "{color}",
             shadow = [
                 ft.BoxShadow(
-                    offset = ft.Offset({int(distance)}, {int(distance)}),
+                    offset = ft.Offset({-X if type(distance)==tuple else distance }, {-Y if type(distance)==tuple else distance}),
                     blur_radius = {int(blur)},
                     color = "{shadow_color}",
                     blur_style = ft.ShadowBlurStyle.NORMAL,
                 ),
                 ft.BoxShadow(
-                    offset = ft.Offset(-{int(distance)}, -{int(distance)}),
+                    offset = ft.Offset({X if type(distance)==tuple else distance}, {Y if type(distance)==tuple else distance}),
                     blur_radius = {int(blur)},
                     color = "{highlight_color}",
                     blur_style = ft.ShadowBlurStyle.NORMAL,
