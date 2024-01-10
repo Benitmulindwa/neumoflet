@@ -349,11 +349,12 @@ def main(page: Page):
         page.launch_url("https://github.com/Benitmulindwa/neumorphic")
         page.update()
 
-    main_content = Row(
+    main_content = ResponsiveRow(
         [
             Container(
                 Row(
                     [
+                        Row(expand=True),
                         Column(
                             [
                                 TOP_LEFT,
@@ -372,12 +373,15 @@ def main(page: Page):
                             ],
                             spacing=370,
                         ),
+                        Row(expand=True),
                     ]
                 ),
-                margin=margin.only(right=30),
+                col={"sm": 6, "xl": 6},
+                margin=margin.only(right=30, bottom=20),
             ),
-            setting_container,
+            Column([setting_container], col={"sm": 6, "xl": 6}),
         ],
+        vertical_alignment=CrossAxisAlignment.CENTER,
         alignment=MainAxisAlignment.CENTER,
         spacing=10,
     )
@@ -385,7 +389,7 @@ def main(page: Page):
 
     title_container = Row(
         [
-            Container(width=150),
+            Row(expand=True),
             Container(
                 Column(
                     [
@@ -399,9 +403,10 @@ def main(page: Page):
                     spacing=0,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                 ),
-                expand=True,
+                # expand=True,
                 margin=margin.only(bottom=25),
             ),
+            Row(expand=True),
             Container(
                 Chip(
                     label=Text(
@@ -417,11 +422,16 @@ def main(page: Page):
                 margin=margin.only(bottom=40),
             ),
         ],
-        alignment=MainAxisAlignment.CENTER,
+        # alignment=MainAxisAlignment.CENTER,
     )
 
     page.title = "Neumoflet.ui"
     page.bgcolor = color_picker.color
+
+    page.vertical_alignment = CrossAxisAlignment.CENTER
+    page.horizontal_alignment = MainAxisAlignment.CENTER
+
+    page.scroll = "always"
 
     page.fonts = {
         "muli": "/fonts/Muli-Regular.ttf",
