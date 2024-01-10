@@ -5,14 +5,12 @@ from ui import *
 import math
 
 
-def main(page: Page):
-    color_picker = ColorPicker(color="#c5b5b5", width=300)
-    shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
+MAIN_COLOR = "#c5b5b5"
 
-    def copy_code(e):
-        # e.control.bgcolor = "#7fff00"
-        page.set_clipboard(code.value.replace("python", "").replace("```", ""))
-        page.update()
+
+def main(page: Page):
+    color_picker = ColorPicker(color=MAIN_COLOR, width=300)
+    shadow_color, highlight_color = calculate_shadow_colors(color_picker.color)
 
     def handle_light(data, DIST):
         if data == "top_left":
@@ -204,6 +202,29 @@ def main(page: Page):
         code_style=TextStyle(size=10),
     )
 
+    def copy_code(e):
+        # e.control.bgcolor = ""
+        shadow_color, _ = calculate_shadow_colors(color_picker.color)
+        page.set_clipboard(code.value.replace("python", "").replace("```", ""))
+        page.snack_bar = SnackBar(
+            Text(
+                "Copied to clipboard",
+                text_align="center",
+                color="green" if is_color_dark(color_picker.color) else "#013220",
+                weight=FontWeight.BOLD,
+                size=20,
+                font_family="muli",
+            ),
+            bgcolor=shadow_color,
+        )
+        page.snack_bar.open = True
+        page.update()
+
+    def hovered(e):
+        e.control.bgcolor = "#7fff00" if e.control.bgcolor == "green" else "green"
+        e.control.update()
+
+    # COPY BUTTON
     copy_bt = Container(
         Text(
             "Copy",
@@ -216,6 +237,7 @@ def main(page: Page):
         height=22,
         bgcolor="green",
         on_click=copy_code,
+        on_hover=hovered,
     )
 
     setting_container = Container(

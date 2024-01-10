@@ -70,12 +70,11 @@ def display_code(
     highlight_color,
     size: int = 250,
     radius: int = 50,
-    distance: int = -20,
+    distance: tuple = (-20, -20),
     blur: int = 60,
     color="#c5b5b5",
 ):
-    if type(distance) == tuple:
-        X, Y = distance
+    X, Y = distance
     code = f"""
 ```python
 ft.Container(
