@@ -181,8 +181,6 @@ def main(page: Page):
 
     _element = element(shadow_color, highlight_color)
 
-    # print(_element.shadow[0].offset)
-
     color_picker_container = Container(
         width=32,
         height=32,
@@ -202,10 +200,12 @@ def main(page: Page):
         code_style=TextStyle(size=10),
     )
 
+    # Copy the generated code
     def copy_code(e):
-        # e.control.bgcolor = ""
         shadow_color, _ = calculate_shadow_colors(color_picker.color)
         page.set_clipboard(code.value.replace("python", "").replace("```", ""))
+
+        # Open a snackbar to notify that the code has been copied
         page.snack_bar = SnackBar(
             Text(
                 "Copied to clipboard",
@@ -220,6 +220,7 @@ def main(page: Page):
         page.snack_bar.open = True
         page.update()
 
+    # When hovered over the "copy" button
     def hovered(e):
         e.control.bgcolor = "#7fff00" if e.control.bgcolor == "green" else "green"
         e.control.update()
@@ -302,9 +303,7 @@ def main(page: Page):
         ],
     )
 
-    # Change Color
-    # _________________________________________________________________________________________________________________________________
-
+    # Color changed
     def change_color(e):
         size = SIZE.content.controls[1].value
         radius = RADIUS.content.controls[1].value
@@ -313,6 +312,7 @@ def main(page: Page):
 
         # Check the luminance of  the picked color
         if is_color_dark(color_picker.color):
+            # If the color is kinda dark, set the text and the sliders to white
             TEXT_SLIDERS_COLOR = "white"
 
         else:
@@ -354,6 +354,8 @@ def main(page: Page):
         setting_container.shadow[0].color = shadow_color
         setting_container.shadow[1].color = highlight_color
 
+        #
+
         if type(_element.shadow[1].offset) == tuple:
             X, Y = _element.shadow[1].offset
 
@@ -389,7 +391,7 @@ def main(page: Page):
     )
     page.dialog = d
 
-    # _____________________________________________________________________________________________________________________________________
+    # Go to the github repo when start on github is clicked
     def star_github(e):
         page.launch_url("https://github.com/Benitmulindwa/neumorphic")
         page.update()
@@ -449,7 +451,9 @@ def main(page: Page):
             ),
             Container(
                 Chip(
-                    label=Text("Star on GitHub"),
+                    label=Text(
+                        "Star on GitHub", font_family="muli", weight=FontWeight.W_700, text_align="center"
+                    ),
                     bgcolor="white",
                     leading=Icon(icons.STAR_BORDER),
                     on_click=star_github,
@@ -460,6 +464,7 @@ def main(page: Page):
         alignment=MainAxisAlignment.CENTER,
     )
 
+    page.title = "Neumoflet.ui"
     page.bgcolor = color_picker.color
 
     page.fonts = {
