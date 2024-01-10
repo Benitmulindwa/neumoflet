@@ -1,7 +1,7 @@
 from flet import *
 from flet_contrib.color_picker import ColorPicker
 from utils import is_color_dark, calculate_shadow_colors, display_code
-from ui import *
+from ui import element, text_slider_ui, light_source_ui, settings_container
 import math
 
 
@@ -181,14 +181,6 @@ def main(page: Page):
 
     _element = element(shadow_color, highlight_color)
 
-    color_picker_container = Container(
-        width=32,
-        height=32,
-        bgcolor=color_picker.color,
-        border=border.all(2, "black"),
-        on_click=open_color_picker,
-    )
-
     generated_code = display_code(
         shadow_color, highlight_color, distance=(-20, -20), color=color_picker.color
     )
@@ -241,66 +233,27 @@ def main(page: Page):
         on_hover=hovered,
     )
 
-    setting_container = Container(
-        Column(
-            [
-                Container(
-                    Row(
-                        [
-                            Text(
-                                "Pick a color:",
-                                size=15,
-                                weight=FontWeight.W_600,
-                                font_family="muli",
-                            ),
-                            color_picker_container,
-                        ]
-                    ),
-                    margin=margin.only(right=10),
-                ),
-                SIZE,
-                RADIUS,
-                DISTANCE,
-                INTENSITY,
-                BLUR,
-                Text("Code:", size=15, weight=FontWeight.W_600, font_family="muli"),
-                Container(
-                    width=380,
-                    height=110,
-                    margin=margin.only(top=5),
-                    content=Stack(
-                        [
-                            Column(
-                                [code],
-                                scroll="always",
-                                alignment=CrossAxisAlignment.CENTER,
-                            ),
-                            Row([copy_bt], alignment=MainAxisAlignment.END),
-                        ]
-                    ),
-                ),
-            ],
-            spacing=0,
-        ),
-        border_radius=35,
-        width=350,
-        height=450,
+    #
+    color_picker_container = Container(
+        width=32,
+        height=32,
         bgcolor=color_picker.color,
-        padding=padding.only(30, 20, 30, 20),
-        shadow=[
-            BoxShadow(
-                blur_radius=5,
-                color=shadow_color,
-                offset=Offset(5, 5),
-                blur_style=ShadowBlurStyle.NORMAL,
-            ),
-            BoxShadow(
-                blur_radius=5,
-                color=highlight_color,
-                offset=Offset(-5, -5),
-                blur_style=ShadowBlurStyle.NORMAL,
-            ),
-        ],
+        border=border.all(2, "black"),
+        on_click=open_color_picker,
+    )
+
+    setting_container = settings_container(
+        SIZE,
+        RADIUS,
+        DISTANCE,
+        INTENSITY,
+        BLUR,
+        color_picker_container,
+        code,
+        copy_bt,
+        color_picker.color,
+        shadow_color,
+        highlight_color,
     )
 
     # Color changed
@@ -452,7 +405,10 @@ def main(page: Page):
             Container(
                 Chip(
                     label=Text(
-                        "Star on GitHub", font_family="muli", weight=FontWeight.W_700, text_align="center"
+                        "Star on GitHub",
+                        font_family="muli",
+                        weight=FontWeight.W_700,
+                        text_align="center",
                     ),
                     bgcolor="white",
                     leading=Icon(icons.STAR_BORDER),
