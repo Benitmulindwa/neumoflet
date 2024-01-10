@@ -354,7 +354,6 @@ def main(page: Page):
             Container(
                 Row(
                     [
-                        Row(expand=True),
                         Column(
                             [
                                 TOP_LEFT,
@@ -363,8 +362,9 @@ def main(page: Page):
                             spacing=370,
                         ),
                         Column(
-                            [Container(width=370), _element, Container(width=370)],
+                            [ _element],
                             horizontal_alignment=CrossAxisAlignment.CENTER,
+                            expand=True,
                         ),
                         Column(
                             [
@@ -373,13 +373,13 @@ def main(page: Page):
                             ],
                             spacing=370,
                         ),
-                        Row(expand=True),
                     ]
                 ),
-                col={"sm": 6, "xl": 6},
+                col={"md": 6, "xl": 6},
                 margin=margin.only(right=30, bottom=20),
             ),
-            Column([setting_container], col={"sm": 6, "xl": 6}),
+            Column([setting_container], col={"md": 6, "xl": 6}),
+            # Row(expand=True),
         ],
         vertical_alignment=CrossAxisAlignment.CENTER,
         alignment=MainAxisAlignment.CENTER,
