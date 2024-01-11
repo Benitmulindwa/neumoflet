@@ -351,7 +351,7 @@ def main(page: Page):
 
     main_content = ResponsiveRow(
         [
-            Container(col={"xl": 1}),
+            Container(col={"xl": 2}),
             Container(
                 Row(
                     [
@@ -381,10 +381,9 @@ def main(page: Page):
                             horizontal_alignment=CrossAxisAlignment.CENTER,
                         ),
                     ],
-                    # alignment=MainAxisAlignment.SPACE_EVENLY,
                 ),
-                col={"md": 6, "xl": 5},
-                margin=margin.only(left=10, right=10, bottom=20),
+                col={"md": 6, "xl": 4.27},
+                # margin=margin.only(left=10, right=10, bottom=20),
             ),
             Column(
                 [
@@ -393,6 +392,7 @@ def main(page: Page):
                 col={"md": 6, "xl": 5},
                 horizontal_alignment=CrossAxisAlignment.CENTER,
             ),
+            Container(col={"xl": 2}),
         ],
         # vertical_alignment=CrossAxisAlignment.CENTER,
         alignment=MainAxisAlignment.CENTER,
@@ -402,7 +402,6 @@ def main(page: Page):
     title.alignment = alignment.center
     title_container = Row(
         [
-            # Row(expand=True),
             Container(
                 Column(
                     [
@@ -416,7 +415,6 @@ def main(page: Page):
                     spacing=0,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                 ),
-                # bgcolor="pink",
                 margin=margin.only(bottom=25),
                 expand=True,
             ),

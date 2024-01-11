@@ -138,7 +138,7 @@ def settings_container(
         width=350,
         height=450,
         bgcolor=color,
-        margin=margin.only(left=10, right=10, bottom=10),
+        margin=margin.only(left=10, right=10, top=10, bottom=10),
         padding=padding.only(30, 20, 30, 20),
         shadow=[
             BoxShadow(
