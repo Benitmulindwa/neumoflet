@@ -351,6 +351,7 @@ def main(page: Page):
 
     main_content = ResponsiveRow(
         [
+            Container(col={"xl": 1}),
             Container(
                 Row(
                     [
@@ -360,9 +361,14 @@ def main(page: Page):
                                 BOTTOM_RIGHT,
                             ],
                             spacing=370,
+                            horizontal_alignment=CrossAxisAlignment.CENTER,
                         ),
                         Column(
-                            [ _element],
+                            [
+                                Container(width=370, bgcolor="red"),
+                                _element,
+                                Container(width=370, bgcolor="red"),
+                            ],
                             horizontal_alignment=CrossAxisAlignment.CENTER,
                             expand=True,
                         ),
@@ -372,18 +378,25 @@ def main(page: Page):
                                 BOTTOM_LEFT,
                             ],
                             spacing=370,
+                            horizontal_alignment=CrossAxisAlignment.CENTER,
                         ),
-                    ]
+                    ],
+                    # alignment=MainAxisAlignment.SPACE_EVENLY,
                 ),
-                col={"md": 6, "xl": 6},
-                margin=margin.only(right=30, bottom=20),
+                col={"md": 6, "xl": 5},
+                margin=margin.only(left=10, right=10, bottom=20),
             ),
-            Column([setting_container], col={"md": 6, "xl": 6}),
-            # Row(expand=True),
+            Column(
+                [
+                    setting_container,
+                ],
+                col={"md": 6, "xl": 5},
+                horizontal_alignment=CrossAxisAlignment.CENTER,
+            ),
         ],
-        vertical_alignment=CrossAxisAlignment.CENTER,
+        # vertical_alignment=CrossAxisAlignment.CENTER,
         alignment=MainAxisAlignment.CENTER,
-        spacing=10,
+        spacing=0,
     )
     title = Container(Text("Neumoflet.ui", size=50, font_family="muli"))
 
@@ -403,7 +416,6 @@ def main(page: Page):
                     spacing=0,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                 ),
-                # expand=True,
                 margin=margin.only(bottom=25),
             ),
             Row(expand=True),
@@ -415,23 +427,25 @@ def main(page: Page):
                         weight=FontWeight.W_700,
                         text_align="center",
                     ),
+                    expand=True,
                     bgcolor="white",
                     leading=Icon(icons.STAR_BORDER),
                     on_click=star_github,
                 ),
+                # expand=True,
                 margin=margin.only(bottom=40),
             ),
         ],
-        # alignment=MainAxisAlignment.CENTER,
+        alignment=MainAxisAlignment.CENTER,
     )
 
     page.title = "Neumoflet.ui"
     page.bgcolor = color_picker.color
 
-    page.vertical_alignment = CrossAxisAlignment.CENTER
-    page.horizontal_alignment = MainAxisAlignment.CENTER
+    # page.vertical_alignment = CrossAxisAlignment.CENTER
+    # page.horizontal_alignment = MainAxisAlignment.CENTER
 
-    page.scroll = "always"
+    page.scroll = "hidden"
 
     page.fonts = {
         "muli": "/fonts/Muli-Regular.ttf",

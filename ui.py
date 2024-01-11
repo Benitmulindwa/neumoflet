@@ -93,7 +93,7 @@ def settings_container(
     shadow_color,
     highlight_color,
 ):
-    return Container(
+    set_cont = Container(
         Column(
             [
                 Container(
@@ -138,7 +138,7 @@ def settings_container(
         width=350,
         height=450,
         bgcolor=color,
-        margin=margin.only(30),
+        margin=margin.only(left=10, right=10, bottom=10),
         padding=padding.only(30, 20, 30, 20),
         shadow=[
             BoxShadow(
@@ -155,3 +155,5 @@ def settings_container(
             ),
         ],
     )
+    # set_cont.alignment = alignment.center
+    return set_cont
