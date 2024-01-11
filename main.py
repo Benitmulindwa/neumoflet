@@ -399,10 +399,10 @@ def main(page: Page):
         spacing=0,
     )
     title = Container(Text("Neumoflet.ui", size=50, font_family="muli"))
-
+    title.alignment = alignment.center
     title_container = Row(
         [
-            Row(expand=True),
+            # Row(expand=True),
             Container(
                 Column(
                     [
@@ -416,9 +416,11 @@ def main(page: Page):
                     spacing=0,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                 ),
+                # bgcolor="pink",
                 margin=margin.only(bottom=25),
+                expand=True,
             ),
-            Row(expand=True),
+            # Row(expand=True),
             Container(
                 Chip(
                     label=Text(
@@ -436,7 +438,7 @@ def main(page: Page):
                 margin=margin.only(bottom=40),
             ),
         ],
-        alignment=MainAxisAlignment.CENTER,
+        alignment=MainAxisAlignment.END,
     )
 
     page.title = "Neumoflet.ui"
