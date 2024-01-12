@@ -282,10 +282,10 @@ def main(page: Page):
         for bubble in [TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT]:
             bubble.border.top.color = TEXT_SLIDERS_COLOR
 
-        title_container.controls[1].content.controls[
+        title_container.controls[0].content.controls[
             0
         ].content.color = TEXT_SLIDERS_COLOR
-        title_container.controls[1].content.controls[1].color = TEXT_SLIDERS_COLOR
+        title_container.controls[0].content.controls[1].color = TEXT_SLIDERS_COLOR
         color_picker_container.border.top.color = TEXT_SLIDERS_COLOR
         color_picker_container.bgcolor = color_picker.color
         page.bgcolor = color_picker.color
@@ -383,7 +383,6 @@ def main(page: Page):
                     ],
                 ),
                 col={"md": 6, "xl": 4.27},
-                # margin=margin.only(left=10, right=10, bottom=20),
             ),
             Column(
                 [
@@ -394,12 +393,53 @@ def main(page: Page):
             ),
             Container(col={"xl": 2}),
         ],
-        # vertical_alignment=CrossAxisAlignment.CENTER,
         alignment=MainAxisAlignment.CENTER,
         spacing=0,
     )
+
+    def page_resized(e):
+        if page.width < 500:
+            title.content.size = 18
+            title.content.weight = FontWeight.BOLD
+            title_container.controls[0].content.controls[1].size = 21
+            title_container.controls[0].content.controls[1].weight = FontWeight.W_300
+            if len(title_container.controls) >= 2:
+                title_container.controls.remove(star_chip)
+
+        else:
+            title.content.size = 50
+            title_container.controls[0].content.controls[1].size = 15
+            title_container.controls[0].content.controls[1].weight = FontWeight.W_700
+
+            if len(title_container.controls) < 2:
+                title_container.controls.append(star_chip)
+
+        title_container.update()
+
+    page.on_resize = page_resized
+    page.update()
+
+    # print(main_content.controls[2].col)
     title = Container(Text("Neumoflet.ui", size=50, font_family="muli"))
     title.alignment = alignment.center
+
+    star_chip = Container(
+        Chip(
+            label=Text(
+                "Star on GitHub",
+                font_family="muli",
+                weight=FontWeight.W_700,
+                text_align="center",
+            ),
+            expand=True,
+            bgcolor="white",
+            leading=Icon(icons.STAR_BORDER),
+            on_click=star_github,
+        ),
+        # expand=True,
+        margin=margin.only(bottom=40, top=25),
+    )
+
     title_container = Row(
         [
             Container(
@@ -415,35 +455,18 @@ def main(page: Page):
                     spacing=0,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                 ),
-                margin=margin.only(bottom=25),
+                # bgcolor="blue",
+                margin=margin.only(bottom=25, top=25),
                 expand=True,
             ),
             # Row(expand=True),
-            Container(
-                Chip(
-                    label=Text(
-                        "Star on GitHub",
-                        font_family="muli",
-                        weight=FontWeight.W_700,
-                        text_align="center",
-                    ),
-                    expand=True,
-                    bgcolor="white",
-                    leading=Icon(icons.STAR_BORDER),
-                    on_click=star_github,
-                ),
-                # expand=True,
-                margin=margin.only(bottom=40),
-            ),
+            star_chip,
         ],
-        alignment=MainAxisAlignment.END,
+        alignment=MainAxisAlignment.SPACE_EVENLY,
     )
 
     page.title = "Neumoflet.ui"
     page.bgcolor = color_picker.color
-
-    # page.vertical_alignment = CrossAxisAlignment.CENTER
-    # page.horizontal_alignment = MainAxisAlignment.CENTER
 
     page.scroll = "hidden"
 
@@ -453,6 +476,23 @@ def main(page: Page):
 
     page.theme_mode = "light"
     page.add(title_container, main_content)
+
+    # if page.width < 500:
+    #     title.content.size = 18
+    #     title.content.weight = FontWeight.BOLD
+    #     title_container.controls[0].content.controls[1].size = 21
+    #     title_container.controls[0].content.controls[1].weight = FontWeight.W_300
+    #     if len(title_container.controls) >= 2:
+    #         title_container.controls.pop(1)
+
+    # else:
+    #     title.content.size = 50
+    #     title_container.controls[0].content.controls[1].size = 15
+    #     title_container.controls.append(star_chip)
+
+    # title_container.update()
+
+    page.update()
 
 
 if __name__ == "__main__":
