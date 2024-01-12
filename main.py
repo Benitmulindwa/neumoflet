@@ -422,24 +422,28 @@ def main(page: Page):
     page.on_resize = page_resized
     page.update()
 
-    title = Container(Text("Neumoflet.ui", size=50, font_family="muli"))
+    title = Container(
+        Text("Neumoflet.ui", size=50, font_family="muli"), margin=margin.all(0)
+    )
     title.alignment = alignment.center
 
     star_chip = Container(
         Chip(
             label=Text(
-                "Star on GitHub",
+                "GitHub",
                 font_family="muli",
                 weight=FontWeight.W_700,
                 text_align="center",
+                size=12,
             ),
-            expand=True,
             bgcolor="white",
+            # padding=padding.all(0),
+            label_padding=padding.all(2),
             leading=Icon(icons.STAR_BORDER),
             on_click=star_github,
         ),
-        # expand=True,
-        margin=margin.only(bottom=40, top=25),
+        width=85,
+        margin=margin.only(left=0, right=0, bottom=40, top=25),
     )
 
     title_container = Row(
@@ -457,14 +461,13 @@ def main(page: Page):
                     spacing=0,
                     horizontal_alignment=CrossAxisAlignment.CENTER,
                 ),
-                # bgcolor="blue",
                 margin=margin.only(bottom=25, top=25),
                 expand=True,
             ),
             # Row(expand=True),
             star_chip,
         ],
-        alignment=MainAxisAlignment.SPACE_EVENLY,
+        # alignment=MainAxisAlignment.END,
     )
 
     page.title = "Neumoflet.ui"
@@ -479,20 +482,6 @@ def main(page: Page):
     page.theme_mode = "light"
     page.add(title_container, main_content)
 
-    # if page.width < 500:
-    #     title.content.size = 18
-    #     title.content.weight = FontWeight.BOLD
-    #     title_container.controls[0].content.controls[1].size = 21
-    #     title_container.controls[0].content.controls[1].weight = FontWeight.W_300
-    #     if len(title_container.controls) >= 2:
-    #         title_container.controls.pop(1)
-
-    # else:
-    #     title.content.size = 50
-    #     title_container.controls[0].content.controls[1].size = 15
-    #     title_container.controls.append(star_chip)
-
-    # title_container.update()
     text_size_on_small_devices()
     page.update()
 
