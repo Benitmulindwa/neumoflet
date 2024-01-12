@@ -397,7 +397,7 @@ def main(page: Page):
         spacing=0,
     )
 
-    def page_resized(e):
+    def text_size_on_small_devices():
         if page.width < 500:
             title.content.size = 18
             title.content.weight = FontWeight.BOLD
@@ -416,10 +416,12 @@ def main(page: Page):
 
         title_container.update()
 
+    def page_resized(e):
+        text_size_on_small_devices()
+
     page.on_resize = page_resized
     page.update()
 
-    # print(main_content.controls[2].col)
     title = Container(Text("Neumoflet.ui", size=50, font_family="muli"))
     title.alignment = alignment.center
 
@@ -491,7 +493,7 @@ def main(page: Page):
     #     title_container.controls.append(star_chip)
 
     # title_container.update()
-
+    text_size_on_small_devices()
     page.update()
 
 
