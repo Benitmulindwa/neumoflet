@@ -437,13 +437,12 @@ def main(page: Page):
                 size=12,
             ),
             bgcolor="white",
-            # padding=padding.all(0),
             label_padding=padding.all(2),
             leading=Icon(icons.STAR_BORDER),
             on_click=star_github,
         ),
         width=85,
-        margin=margin.only(left=0, right=0, bottom=40, top=25),
+        margin=margin.only(left=0, right=20, bottom=40, top=25),
     )
 
     title_container = Row(
