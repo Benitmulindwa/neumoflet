@@ -485,5 +485,4 @@ def main(page: Page):
     page.update()
 
 
-if __name__ == "__main__":
-    app(target=main, assets_dir="assets")
+app(target=main, assets_dir="assets")
