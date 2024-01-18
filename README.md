@@ -1,2 +1,2 @@
 # neumorphic
-![favicon](assets/favicon.PNG)
+![favicon](assets/favicon.png)
