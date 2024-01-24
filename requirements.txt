@@ -1,2 +1,2 @@
 flet==0.18.0
-flet_contrib==2023.8.18
+flet_contrib==2024.1.24
