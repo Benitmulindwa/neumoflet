@@ -1,5 +1,8 @@
+<img src="assets/favicon.png" alt="favicon" width="150"/>
+
 # Neumoflet
-![favicon](assets/favicon.png)
+
+Welcome to the Neumoflet, a website that helps you to generate neumorphic design in Flet. This repository contains the source code for the [Neumoflet](https://neumoflet.onrender.com) website.
 
 [Live Demo](https://neumoflet.onrender.com)
 
@@ -18,4 +21,4 @@ This project is licensed under the [MIT License](LICENSE).
 Happy designing!
 
 ##
-This website was inspired by the work of Adam
+This project was inspired by the work of Adam
