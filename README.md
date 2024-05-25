@@ -21,4 +21,4 @@ This project is licensed under the [MIT License](LICENSE).
 Happy designing!
 
 ##
-This project was inspired by the work of Adam
+This project was inspired by the work of Adam.
